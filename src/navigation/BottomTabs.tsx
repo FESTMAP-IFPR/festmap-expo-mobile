@@ -10,12 +10,17 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
-import { UpComingEventsScreen } from "../screens/UpComingEventsScreen";
+import { useTheme } from "react-native-paper";
+import { EventsScreen } from "../screens/EventsScreen";
+import { EventsStackNavigator } from "./EventsStackNavigator";
 
 const Tab = createBottomTabNavigator();
 const showBottonTabs = () => {
+
+  const theme = useTheme();
+
   const focusTabColor = (focused:  boolean) => {
-    return focused ? "#8A44FF" : "#151515";
+    return focused ? theme.colors.primary : theme.colors.secondary;
   }
   return (
     <Tab.Navigator
@@ -26,9 +31,10 @@ const showBottonTabs = () => {
       initialRouteName="HomeScreen"
     >
       <Tab.Screen
-        name="UpComingEventsScreen"
-        component={UpComingEventsScreen}
+        name="EventsStackScreen"
+        component={EventsStackNavigator}
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <>
               <Icon

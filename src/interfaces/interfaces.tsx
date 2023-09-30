@@ -10,3 +10,8 @@ export interface UserData {
     name: string;
     email: string;
 }
+export interface EventData {
+  name?: string;
+  description?: string;
+  date?: Date;
+}

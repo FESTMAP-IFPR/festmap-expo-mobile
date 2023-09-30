@@ -1,11 +1,14 @@
 import React, { useContext } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { DarkTheme, NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "../screens/LoginScreen";
 import showBottonTabs from "./BottomTabs";
 import { SignUpScreen } from "../screens/SignUpScreen";
 import { useAuth } from "../contexts/auth";
 import { ActivityIndicator, View } from "react-native";
+import { AddEventScreen } from "../screens/AddEventScreen";
+import { EventsScreen } from "../screens/EventsScreen";
+import { EventsStackNavigator } from "./EventsStackNavigator";
 
 const Stack = createStackNavigator();
 
@@ -19,11 +22,7 @@ const Navigation: React.FC = () => {
       </View>
     );
   }
-  return (
-    <NavigationContainer>
-      {signed ? <AppNavigation /> : <AuthNavigation />}
-    </NavigationContainer>
-  );
+  return <>{signed ? <AppNavigation /> : <AuthNavigation />}</>;
 };
 
 export default Navigation;
@@ -43,3 +42,21 @@ export const AppNavigation = () => (
     <Stack.Screen name="AppScreens">{showBottonTabs}</Stack.Screen>
   </Stack.Navigator>
 );
+
+export const verticalAnimation = {
+  gestureDirection: "vertical",
+  cardStyleInterpolator: ({ current, layouts }: any) => {
+    return {
+      cardStyle: {
+        transform: [
+          {
+            translateY: current.progress.interpolate({
+              inputRange: [0, 1],
+              outputRange: [layouts.screen.height, 0],
+            }),
+          },
+        ],
+      },
+    };
+  },
+};

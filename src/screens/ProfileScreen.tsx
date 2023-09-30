@@ -30,7 +30,7 @@ export const ProfileScreen = () => {
   );
 };
 
-const makeStyles = (theme) =>
+const makeStyles = (theme: any) =>
   StyleSheet.create({
     container: {
       flex: 1,

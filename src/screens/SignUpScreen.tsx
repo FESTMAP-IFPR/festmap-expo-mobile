@@ -8,7 +8,7 @@ import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
-export const SignUpScreen = ({ visible, hideModal }) => {
+export const SignUpScreen = ({ visible, hideModal } : any) => {
   const today = new Date();
   const eighteenYearsAgo = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
   const containerStyle = { backgroundColor: '#C3BEF7', padding: 20, flex: 1 };
@@ -18,10 +18,10 @@ export const SignUpScreen = ({ visible, hideModal }) => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [date, setDate] = React.useState(new Date(eighteenYearsAgo));
-  const [image, setImage] = React.useState(null);
+  const [image, setImage] = React.useState('');
   const [show, setShow] = React.useState(false);
 
-  const onChange = (event, selectedDate) => {
+  const onChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate;
     setShow(false);
     setDate(currentDate);
@@ -31,7 +31,7 @@ export const SignUpScreen = ({ visible, hideModal }) => {
     setShow(true);
   };
 
-  const formatCpf = (text) => {
+  const formatCpf = (text: any) => {
     const cleanedText = text.replace(/[^\d]/g, '');
     const firstGroup = cleanedText.slice(0, 3);
     const secondGroup = cleanedText.slice(3, 6);
