@@ -11,7 +11,7 @@ import * as FileSystem from 'expo-file-system';
 export const SignUpScreen = ({ visible, hideModal } : any) => {
   const today = new Date();
   const eighteenYearsAgo = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
-  const containerStyle = { backgroundColor: '#C3BEF7', padding: 20, flex: 1 };
+  const containerStyle = { backgroundColor: '#E5ECF4', padding: 20, marginTop: 0, marginBottom: 0, margin: 10, borderRadius: 10 };
   const [name, setName] = React.useState('');
   const [sexo, setSexo] = React.useState();
   const [cpf, setCpf] = React.useState('');
@@ -48,7 +48,7 @@ export const SignUpScreen = ({ visible, hideModal } : any) => {
     const base64Image = await FileSystem.readAsStringAsync(image, {
       encoding: FileSystem.EncodingType.Base64,
     });
-    // console.log(name, cpf, sexo, email, password, date.toLocaleDateString(), base64Image);
+    console.log(name, cpf, sexo, email, password, date.toLocaleDateString(), "hash_base_base64Image");
     hideModal();
   };
 
@@ -73,12 +73,16 @@ export const SignUpScreen = ({ visible, hideModal } : any) => {
             <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Cadastro de Usuário</Text>
             <TextInput
               label="Nome"
+              mode='flat'
+              placeholder='Digite seu nome'
               value={name}
               onChangeText={text => setName(text)}
               style={styles.input}
             />
             <TextInput
               label={'CPF'}
+              mode='flat'
+              placeholder='Digite seu CPF'
               value={cpf}
               onChangeText={formatCpf}
               keyboardType="number-pad"
@@ -86,15 +90,17 @@ export const SignUpScreen = ({ visible, hideModal } : any) => {
               style={styles.input}
             />
             <View style={styles.pickerContainer}>
-              <Text style={styles.label}>Sexo:</Text>
+              {/* <Text style={styles.label}>Sexo:</Text> */}
+              {/* <Picker.Item label="Select Gender" value={""}/> */}
               <Picker
                 selectedValue={sexo}
                 onValueChange={(itemValue, itemIndex) =>
                   setSexo(itemValue)
                 }
                 style={styles.picker}
+                itemStyle={styles.pickerItem}
               >
-                <Picker.Item label="Selecione" value="" />
+                <Picker.Item label="Selecione seu sexo" value="" />
                 <Picker.Item label="Feminino" value="feminino" />
                 <Picker.Item label="Masculino" value="masculino" />
                 <Picker.Item label="Outro" value="outro" />
@@ -102,12 +108,14 @@ export const SignUpScreen = ({ visible, hideModal } : any) => {
             </View>
             <TextInput
               label="E-mail"
+              placeholder='Digite seu E-mail'
               value={email}
               onChangeText={text => setEmail(text)}
               style={styles.input}
             />
             <TextInput
               label="Senha"
+              placeholder='Digite sua senha'
               value={password}
               onChangeText={text => setPassword(text)}
               secureTextEntry
@@ -122,7 +130,7 @@ export const SignUpScreen = ({ visible, hideModal } : any) => {
                 editable={false}
               />
               <Button mode="outlined" onPress={showMode} style={{ marginLeft: 10 }}>
-                Selecionar
+                Selecionar Data
               </Button>
               {show && (
                 <DateTimePicker
@@ -133,8 +141,6 @@ export const SignUpScreen = ({ visible, hideModal } : any) => {
                 />
               )}
             </View>
-
-
             <Button
               mode="outlined"
               onPress={pickImage}
@@ -149,6 +155,7 @@ export const SignUpScreen = ({ visible, hideModal } : any) => {
 
           </View>
           <Button mode="contained" onPress={handleRegister}>Cadastrar</Button>
+          <Button mode="outlined" onPress={hideModal} style={{ marginTop: 10 }}>Cancelar</Button>
         </ScrollView>
       </Modal>
     </Portal>
@@ -158,18 +165,6 @@ export const SignUpScreen = ({ visible, hideModal } : any) => {
 const styles = StyleSheet.create({
   input: {
     marginBottom: 10,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  inputCpf: {
-    width: '80%',
-    height: 40,
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
   },
   pickerContainer: {
     flexDirection: 'row',
@@ -185,5 +180,11 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 1,
     borderRadius: 5,
+    backgroundColor: '#EFEFEF', // Add background color
+    marginTop: 5, // Add margin if needed
   },
+  pickerItem: {
+    fontSize: 16, // Customize font size
+    color: 'black', // Customize text color
+  }
 });

@@ -104,10 +104,6 @@ const styles = StyleSheet.create({
     },
     input: {
         width: "100%",
-        height: 50,
-        borderColor: "#ccc",
-        borderRadius: 15,
-        paddingHorizontal: 10,
         marginBottom: 10,
         backgroundColor: "#fff",
     },
