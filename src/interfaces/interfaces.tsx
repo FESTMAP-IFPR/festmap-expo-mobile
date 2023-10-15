@@ -1,14 +1,15 @@
 export interface AuthContextData {
   signed: boolean;
-  user: UserData;
+  user: UserData | null;
   loading: boolean;
-  signIn(): Promise<void>;
+  signIn(email: any, password: any): void;
   signOut(): void;
 }
 
 export interface UserData {
     name: string;
     email: string;
+    isAdmin: boolean;
 }
 export interface EventData {
   name?: string;

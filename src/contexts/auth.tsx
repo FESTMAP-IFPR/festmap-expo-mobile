@@ -22,8 +22,8 @@ export const AuthProvider = ({ children }) => {
     loadStorageData();
   });
 
-  const signIn = async () => {
-    const response = await auth.signIn();
+  const signIn = async (email: string, password: string) => {
+    const response = await auth.login(email, password);
     const { token, user } = response;
     console.log(response);
     setUser(user);

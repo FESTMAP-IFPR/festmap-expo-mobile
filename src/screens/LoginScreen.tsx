@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { View, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
 import WelcomeImage from "../../assets/icon.png";
 import { Text, TextInput } from "react-native-paper";
-import { signIn } from "../services/auth";
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from "../contexts/auth";
 import { SignUpScreen } from "./SignUpScreen";
@@ -22,7 +21,8 @@ const LoginScreen = () => {
             Alert.alert("Atenção", "Preencha todos os campos");
             return;
         }
-        signIn();
+        console.log(email, password);
+        signIn(email, password);
     };
 
     const handleRegister = () => {
