@@ -18,7 +18,7 @@ const showBottonTabs = () => {
 
   const theme = useTheme();
   // const focusTabColor = (focused:  boolean) => {
-  //   return focused ? theme.colors.primary : theme.colors.secondary;
+  //   return focused ? theme.colors.secondary : theme.colors.secondary;
   // }
   return user?.isAdmin ? (
     <Tab.Navigator
@@ -67,7 +67,10 @@ const showBottonTabs = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarShowLabel: true,
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          backgroundColor: "#c3bef7",
+        },
       }}
       initialRouteName="Minha localização"
     >
@@ -78,7 +81,7 @@ const showBottonTabs = () => {
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <>
-             <MaterialIcons name="event" size={40} color="white" />
+             <MaterialIcons name="event" size={40} color="#151515" />
             </>
           ),
         }}
@@ -89,7 +92,7 @@ const showBottonTabs = () => {
         options={{
           tabBarIcon: ({ focused }) => (
             <>
-              <Entypo name="location-pin" size={40} color={"white"}/>
+              <Entypo name="location-pin" size={40} color={"#151515"}/>
             </>
           ),
         }}
@@ -100,7 +103,7 @@ const showBottonTabs = () => {
         options={{
           tabBarIcon: ({ focused }) => (
             <>
-              <Ionicons name="person" size={40} color="white" />
+              <Ionicons name="person" size={40} color="#151515" />
             </>
           ),
         }}

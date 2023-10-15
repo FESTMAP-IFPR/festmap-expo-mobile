@@ -1,15 +1,12 @@
-import { StyleSheet, View, Modal} from "react-native";
+import { StyleSheet, View} from "react-native";
 import React, { useState, useEffect } from "react";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
-import { MaterialIcons } from "@expo/vector-icons";
-import { Title } from "react-native-paper";
+import CustomMarker from "../components/CustomMarker";
 
 
 export const HomeScreen = () => {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
-
-  
   const [events, setEvents] = useState([
     { 
       id: 1, 
@@ -17,7 +14,29 @@ export const HomeScreen = () => {
         latitude: -25.4781, 
         longitude: -54.5792
       },
-      title: "Evento 1",
+      title: "Futebol 7",
+      data_hora_inicio: "2021-10-10 10:00:00",
+      data_hora_fim: "2021-10-10 12:00:00",
+      categoria: "Festa",
+      contato: "999999999",
+      descricao: "Festa de aniversário",
+      classificacao: "Livre",
+      endereco: {
+        pais: "Brasil",
+        estado: "Paraná",
+        cidade: "Foz do Iguaçu",
+        bairro: "Centro",
+        rua: "Av. Brasil",
+        numero: 123
+      }
+    },
+    { 
+      id: 2, 
+      localizacao: {
+        latitude: -25.4790, 
+        longitude: -54.5780
+      },
+      title: "Futebol 8",
       data_hora_inicio: "2021-10-10 10:00:00",
       data_hora_fim: "2021-10-10 12:00:00",
       categoria: "Festa",
@@ -41,32 +60,26 @@ export const HomeScreen = () => {
 
   const MapScreen = ({ location }: MapScreenProps) => {
     const renderEventMarkers = () => {
-      return events.map((event) => (
-        <Marker
-          key={event.id}
-          coordinate={{
-            latitude: event.localizacao?.latitude || 0,
-            longitude: event.localizacao?.longitude || 0,
-          }}
-          tracksViewChanges={false}
-        >
-          <Title
-            style={{
-              color: "black",
-              backgroundColor: "#c3bef7",
-              padding: 5,
-              borderRadius: 5,
-              fontSize: 13,
-              margin: 0,
-            }}
-          >{event.title}</Title>
-          <CustomMarker title={event.title}/>
-        </Marker>
+      return events.map((event, index) => (
+        <CustomMarker 
+        key={index}
+          evento={{
+            latitude: event.localizacao.latitude, 
+            longitude: event.localizacao.longitude, 
+            imagem: "/home/rafhael/FESTMAP/festmap-expo-mobile/src/components/icon.png",
+            titulo: event.title, 
+            inicio: event.data_hora_inicio,
+            fim: event.data_hora_fim,
+            categoria: event.categoria,
+            contato: event.contato,
+            descricao: event.descricao,
+            classificacao: event.classificacao,
+          }} 
+        />
       ));
     };
 
     return (
-      
       <View style={styles.container}>
         {location ? (
           <MapView
@@ -98,10 +111,6 @@ export const HomeScreen = () => {
     );
   };
 
-  const CustomMarker = ({ title }: { title: string }) => (
-    <MaterialIcons name="event-available" size={30} color="black" />
-  );
-
   useEffect(() => {
     // Solicitar permissão de localização ao usuário
     (async () => {
@@ -120,7 +129,7 @@ export const HomeScreen = () => {
         {
           accuracy: Location.Accuracy.High,
           timeInterval: 10000, // 10 segundos
-          distanceInterval: 10, // 10 metros
+          distanceInterval: 100, // 10 metros
         },
         (newLocation) => {
           setLocation(newLocation);
@@ -155,35 +164,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 20,
     borderRadius: 10,
-  },
-});
-
-const customMarkerStyles = StyleSheet.create({
-  container: {
-    width: 40,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  innerCircle: {
-    width: 20,
-    height: 20,
-    borderRadius: 20,
-    backgroundColor: "rgba(0, 0, 255, 0.5)",
-  },
-  outerCircle: {
-    width: 30,
-    height: 30,
-    borderRadius: 30,
-    borderColor: "blue",
-    borderWidth: 2,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    color: "white",
-    fontSize: 12,
-    fontWeight: "bold",
-    textAlign: "center",
+    marginTop: 20,
   },
 });

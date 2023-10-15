@@ -7,6 +7,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import {register} from '../services/register';
+import { User} from '../models/User';
 
 export const SignUpScreen = ({ visible, hideModal } : any) => {
   const today = new Date();
@@ -48,9 +50,20 @@ export const SignUpScreen = ({ visible, hideModal } : any) => {
     const base64Image = await FileSystem.readAsStringAsync(image, {
       encoding: FileSystem.EncodingType.Base64,
     });
-    console.log(name, cpf, sexo, email, password, date.toLocaleDateString(), "hash_base_base64Image");
+    let user: User = {
+      name: name,
+      cpf: cpf,
+      sexo: sexo,
+      email: email,
+      password: password,
+      dataNascimento: date.toLocaleDateString(),
+      foto: base64Image,
+      administrador: false,
+    };
+    register(user);
     hideModal();
   };
+
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
