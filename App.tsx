@@ -33,9 +33,9 @@ const darkTheme = {
 
 export default function App() {
   return (
-    <PaperProvider theme={darkTheme}>
+    <PaperProvider theme={theme}>
       <AuthProvider>
-       <NavigationContainer theme={darkTheme}>
+       <NavigationContainer>
         <Navigation />
       </NavigationContainer>
       </AuthProvider>

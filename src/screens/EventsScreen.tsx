@@ -1,30 +1,39 @@
 import { useTheme } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  FlatList
 } from "react-native";
-import { DrawerLayout } from "react-native-gesture-handler";
+import { DrawerLayout, ScrollView } from "react-native-gesture-handler";
 import { Appbar, Button } from "react-native-paper";
 import { Animated } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
+import * as Icon from "react-native-feather";
+import Categories from "../components/Categories";
+import { getEventList } from "../services/event";
+import { EventItem } from "../components/EventItem";
 
 const av = new Animated.Value(0);
 av.addListener(() => {return});
 
-
-
 export const EventsScreen = (props: any) => {
   const theme = useTheme();
 
-  const { navigation   } = props;
-
+  const { navigation } = props;
+  const [events, setEvents] = useState<any>([]);
   const styles = makeStyles(theme);
   const handleOpenNewEvent = () => {
     navigation.navigate('AddEventScreen');
   };
+
+  useEffect(() => {
+    getEventList().then((data) => setEvents(data))
+  },[]);
 
   const title = () => {
     return (
@@ -58,10 +67,49 @@ export const EventsScreen = (props: any) => {
   };
 
   return (
-    <View style={styles.container}>
-      {title()}
-      <Text style={styles.title}>Upcoming Events Screen</Text>
-    </View>
+    <SafeAreaView className="bg-white">
+
+        {/* search Bar */}
+        <View className="flex-row items-center space-x-2 px-4 pb-2">
+          <View className="flex-row flex-1 items-center p-3 rounded-full border border-gray-300 ">
+              <Icon.Search height="25" width="25" stroke="gray"/>
+              <TextInput placeholder="Eventos" className="ml-2 flex-1" />
+              <View className="flex-row items-center space-x-1 border-0 border-l-2 pl-2 border-l-gray-300">
+                <Icon.MapPin height={20} width={20} stroke={"gray"} />
+                <Text className="text-gray-600">Foz Do Iguaçu, PR</Text>
+              </View> 
+          </View>
+          <View className="p-3 bg-gray-300 rounded-full">
+              <Icon.Sliders height={20} width={20} strokeWidth={2.5}  stroke={"white"}/>
+          </View>
+        </View>
+        {/* main */}
+        <ScrollView  showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingBottom:20
+        }}>
+          {/* categories */}
+          <Categories/>
+          
+          {/* featured */}
+          <View className="mt-5">
+              {
+              }
+          </View> 
+          {/* events */}
+        </ScrollView>
+        <View className=" mt-4 ">
+          <FlatList
+            keyExtractor={(item) => item.name}
+            data={events}
+            contentContainerStyle={{paddingBottom: 20}}
+            renderItem={({ item }) => {
+              return (<EventItem {...item} /> 
+              )
+            }}
+          ></FlatList>
+        </View>
+    </SafeAreaView>
   );
 };
 
@@ -81,6 +129,6 @@ const makeStyles = (theme: any) =>
       fontSize: 24,
       fontWeight: "bold",
       marginBottom: 20,
-      color: "#fff",
+      color: "#000",
     },
   });

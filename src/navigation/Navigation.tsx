@@ -7,7 +7,6 @@ import { SignUpScreen } from "../screens/SignUpScreen";
 import { useAuth } from "../contexts/auth";
 import { ActivityIndicator, View } from "react-native";
 import { AddEventScreen } from "../screens/AddEventScreen";
-import { EventsScreen } from "../screens/EventsScreen";
 import { EventsStackNavigator } from "./EventsStackNavigator";
 
 const Stack = createStackNavigator();
