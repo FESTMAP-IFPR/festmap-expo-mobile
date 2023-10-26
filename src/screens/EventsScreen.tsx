@@ -9,7 +9,7 @@ import {
   FlatList
 } from "react-native";
 import { DrawerLayout, ScrollView } from "react-native-gesture-handler";
-import { Appbar, Button } from "react-native-paper";
+import { Appbar, Button, FAB } from "react-native-paper";
 import { Animated } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -35,40 +35,8 @@ export const EventsScreen = (props: any) => {
     getEventList().then((data) => setEvents(data))
   },[]);
 
-  const title = () => {
-    return (
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <View style={styles.containerButtons}>
-          <Text style={{ color: "#fff" }}>Next</Text>
-        </View>
-        <View style={styles.containerButtons}>
-          <Text style={{ color: theme.colors.primary }}>Events</Text>
-        </View>
-        <Animated.View style={styles.containerButtons}>
-          <Button
-            icon="plus"
-            dark={true}
-            mode="contained"
-            textColor="#fff"
-            onPress={handleOpenNewEvent}
-            contentStyle={{ flexDirection: "row-reverse" }}
-          >
-            Add
-          </Button>
-        </Animated.View>
-      </View>
-    );
-  };
-
   return (
-    <SafeAreaView className="bg-white">
-
+    <SafeAreaView className="bg-white ">
         {/* search Bar */}
         <View className="flex-row items-center space-x-2 px-4 pb-2">
           <View className="flex-row flex-1 items-center p-3 rounded-full border border-gray-300 ">
@@ -82,33 +50,34 @@ export const EventsScreen = (props: any) => {
           <View className="p-3 bg-gray-300 rounded-full">
               <Icon.Sliders height={20} width={20} strokeWidth={2.5}  stroke={"white"}/>
           </View>
+          <View className="p-3 bg-green-500 rounded-full">
+              <Icon.Plus height={20} width={20} strokeWidth={2.5}  stroke={"white"}/>
+          </View>
         </View>
         {/* main */}
-        <ScrollView  showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom:20
-        }}>
-          {/* categories */}
-          <Categories/>
-          
-          {/* featured */}
-          <View className="mt-5">
-              {
-              }
-          </View> 
+        <View>
+          <ScrollView  showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingTop:20,
+            paddingBottom:20,
+          }}>
+            {/* categories */}
+            {/* <Categories/> */}
+          </ScrollView>
+        </View>
+        <View className=" min-h-screen ">
           {/* events */}
-        </ScrollView>
-        <View className=" mt-4 ">
           <FlatList
-            keyExtractor={(item) => item.name}
+            className=" h-full "
             data={events}
-            contentContainerStyle={{paddingBottom: 20}}
+            contentContainerStyle={{paddingHorizontal: 20}}
             renderItem={({ item }) => {
               return (<EventItem {...item} /> 
               )
             }}
           ></FlatList>
-        </View>
+
+          </View>
     </SafeAreaView>
   );
 };

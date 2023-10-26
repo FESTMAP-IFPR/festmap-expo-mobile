@@ -19,6 +19,21 @@ export const categories = [
     name: "Esporte",
     image: require("../../../assets/categories/boot.png"),
   },
+  {
+    id: 5,
+    name: "Esporte",
+    image: require("../../../assets/categories/boot.png"),
+  },
+  {
+    id: 6,
+    name: "Esporte",
+    image: require("../../../assets/categories/boot.png"),
+  },
+  {
+    id: 7,
+    name: "Esporte",
+    image: require("../../../assets/categories/boot.png"),
+  },
 ];
 
 export const featured = [
@@ -43,6 +58,18 @@ export const featured = [
   },
   {
     id: 4,
+    title: "Evento 1",
+    description: "Evento de role",
+    image: require("../../../assets/categories/boot.png"),
+  },
+  {
+    id: 5,
+    title: "Evento 1",
+    description: "Evento de role",
+    image: require("../../../assets/categories/boot.png"),
+  },
+  {
+    id: 5,
     title: "Evento 1",
     description: "Evento de role",
     image: require("../../../assets/categories/boot.png"),
