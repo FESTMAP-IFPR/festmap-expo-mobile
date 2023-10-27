@@ -14,8 +14,13 @@ export interface UserData {
     isAdmin: boolean;
 }
 export interface EventData {
-  name?: string;
-  description?: string;
-  date?: Date;
+  nome?: string;
+  descricao?: string;
+  data_hora_inicio?: Date;
+  data_hora_fim?: Date;
+  contato?: string;
+  categoria?: string;
+  classificacao?: string;
   image?: string;
+  localizacao?: {};
 }

@@ -14,9 +14,10 @@ import { Animated } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import * as Icon from "react-native-feather";
-import Categories from "../components/Categories";
-import { getEventList } from "../services/event";
-import { EventItem } from "../components/EventItem";
+import Categories from "../../components/Categories";
+import { getEventList } from "../../services/event";
+import { EventItem } from "../../components/EventItem";
+import { EventData } from "../../interfaces/interfaces";
 
 const av = new Animated.Value(0);
 av.addListener(() => {return});
@@ -25,10 +26,10 @@ export const EventsScreen = (props: any) => {
   const theme = useTheme();
 
   const { navigation } = props;
-  const [events, setEvents] = useState<any>([]);
+  const [events, setEvents] = useState<EventData[]>([]);
   const styles = makeStyles(theme);
   const handleOpenNewEvent = () => {
-    navigation.navigate('AddEventScreen');
+    navigation.navigate('CreateEventScreen');
   };
 
   useEffect(() => {
@@ -36,7 +37,7 @@ export const EventsScreen = (props: any) => {
   },[]);
 
   return (
-    <SafeAreaView className="bg-white ">
+    <SafeAreaView className="bg-purple-50 ">
         {/* search Bar */}
         <View className="flex-row items-center space-x-2 px-4 pb-2">
           <View className="flex-row flex-1 items-center p-3 rounded-full border border-gray-300 ">
@@ -50,9 +51,13 @@ export const EventsScreen = (props: any) => {
           <View className="p-3 bg-gray-300 rounded-full">
               <Icon.Sliders height={20} width={20} strokeWidth={2.5}  stroke={"white"}/>
           </View>
-          <View className="p-3 bg-green-500 rounded-full">
-              <Icon.Plus height={20} width={20} strokeWidth={2.5}  stroke={"white"}/>
-          </View>
+          <TouchableOpacity
+            onPress={handleOpenNewEvent}>
+            <View
+              className="p-3 bg-green-500 rounded-full">
+                <Icon.Plus height={20} width={20} strokeWidth={2.5}  stroke={"white"}/>
+            </View>
+          </TouchableOpacity>
         </View>
         {/* main */}
         <View>
@@ -65,12 +70,11 @@ export const EventsScreen = (props: any) => {
             {/* <Categories/> */}
           </ScrollView>
         </View>
-        <View className=" min-h-screen ">
+        <View className=" min-h-screen bg-purple-200">
           {/* events */}
           <FlatList
-            className=" h-full "
+            className=" h-full"
             data={events}
-            contentContainerStyle={{paddingHorizontal: 20}}
             renderItem={({ item }) => {
               return (<EventItem {...item} /> 
               )
