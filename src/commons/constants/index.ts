@@ -36,6 +36,11 @@ export const categories = [
   },
 ];
 
+export const EighteenYearsAgo = () => {
+  const today = new Date();
+  return new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+};
+
 export const featured = [
   {
     id: 1,

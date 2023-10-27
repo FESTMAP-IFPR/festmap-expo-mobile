@@ -19,7 +19,7 @@ export const AddEventScreen = () => {
   const [index, setIndex] = useState(1);
 
   const isValidEvent = () => {
-     return event.name && event.description;
+     return event.nome && event.descricao;
   }
 
   const pagerRef = useRef(null);
@@ -48,10 +48,10 @@ export const AddEventScreen = () => {
             onChangeText={(text) =>
               setEvent((prevState) => ({
                 ...prevState,
-                name: text,
+                nome: text,
               }))
             }
-            value={event.name}
+            value={event.nome}
           />
           <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <ScrollView
@@ -72,10 +72,10 @@ export const AddEventScreen = () => {
                 onChangeText={(text) =>
                   setEvent((prevState) => ({
                     ...prevState,
-                    description: text,
+                    descricao: text,
                   }))
                 }
-                value={event.description}
+                value={event.descricao}
                 keyboardType="default"
               />
             </ScrollView>
