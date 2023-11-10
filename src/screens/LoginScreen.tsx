@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from "../contexts/auth";
 import { SignUpScreen } from "./SignUpScreen";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { ForgotPassword } from "./ForgotPassword";
 
 const LoginScreen = () => {
     const navigation = useNavigation();
@@ -13,15 +14,13 @@ const LoginScreen = () => {
     const [password, setPassword] = useState("");
     const { signed, signIn } = useAuth();
     const [isModalVisible, setIsModalVisible] = useState(false);
-
-    // console.log(signed);
+    const [isModalVisibleForgotPassword, setIsModalVisibleForgotPassword] = useState(false);
 
     const handleLogin = async () => {
         if (!email || !password) {
             Alert.alert("Atenção", "Preencha todos os campos");
             return;
         }
-        console.log(email, password);
         signIn(email, password);
     };
 
@@ -31,9 +30,12 @@ const LoginScreen = () => {
     const hideModal = () => {
         setIsModalVisible(false);
     };
+    const hideModalPassword = () => {
+        setIsModalVisibleForgotPassword(false);
+    }
 
-    const handleForgotPassword = () => {
-        console.log("Navegar para a tela de recuperação de senha");
+    const forgotPassword = () => {
+        setIsModalVisibleForgotPassword(true);
     };
 
 
@@ -62,13 +64,11 @@ const LoginScreen = () => {
                 <Text style={styles.buttonText}>Entrar</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={handleForgotPassword} activeOpacity={0.6}>
-                <Text style={styles.forgotPasswordLink}>
-                    Esqueceu sua senha? Clique aqui
-                </Text>
-            </TouchableOpacity>
-
             <View style={{ height: 100 }} />
+
+            <TouchableOpacity style={styles.tercButton} onPress={forgotPassword}>
+                <Text style={styles.buttonText}>Esqueci minha senha</Text>
+            </TouchableOpacity>
 
             {/* Botão para abrir o modal */}
             <TouchableOpacity style={styles.secondaryButton} onPress={handleRegister}>
@@ -77,6 +77,9 @@ const LoginScreen = () => {
 
             {/* Modal de cadastro */}
             <SignUpScreen visible={isModalVisible} hideModal={hideModal} />
+
+            {/* Modal de esqueci minha senha */}
+            <ForgotPassword visible={isModalVisibleForgotPassword} hideModal={hideModalPassword} />
 
         </KeyboardAwareScrollView>
     );
@@ -136,6 +139,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
         textAlign: "center",
+    },
+    tercButton: {
+        borderWidth: 1,
+        borderColor: "#fff",
+        padding: 10,
+        borderRadius: 15,
+        width: "100%",
+        marginBottom: 60,
+        position: "absolute",
+        bottom: 0,
     },
     forgotPasswordLink: {
         color: "#fff",
