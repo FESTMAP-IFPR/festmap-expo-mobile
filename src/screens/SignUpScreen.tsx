@@ -1,16 +1,17 @@
 import * as React from 'react';
 import { Modal, Portal, Text, Button, TextInput } from 'react-native-paper';
 import { View, StyleSheet, Alert, Image, ScrollView } from "react-native";
+import { generate, validate } from 'gerador-validador-cpf'
 // @ts-ignore
 import { API_URL } from '@env';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
-import {register} from '../services/register';
-import { User} from '../models/User';
+import { register } from '../services/register';
+import { User } from '../models/User';
 
-export const SignUpScreen = ({ visible, hideModal } : any) => {
+export const SignUpScreen = ({ visible, hideModal }: any) => {
   const today = new Date();
   const eighteenYearsAgo = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
   const containerStyle = { backgroundColor: '#E5ECF4', padding: 20, marginTop: 0, marginBottom: 0, margin: 10, borderRadius: 10 };
@@ -43,13 +44,20 @@ export const SignUpScreen = ({ visible, hideModal } : any) => {
   };
 
   const handleRegister = async () => {
-    if (!name || !cpf || !sexo || !email || !password || !date || !image) {
+    if (!name || !cpf || !sexo || !email || !password || !date) {
       Alert.alert('Atenção', 'Preencha todos os campos');
       return;
     }
-    const base64Image = await FileSystem.readAsStringAsync(image, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
+
+    const verificarCPF = validate(cpf);
+    if (!verificarCPF) {
+      Alert.alert('Atenção', 'CPF inválido');
+      return;
+    }
+
+    // const base64Image = await FileSystem.readAsStringAsync(image, {
+    //   encoding: FileSystem.EncodingType.Base64,
+    // });
     let user: User = {
       name: name,
       cpf: cpf,
@@ -57,10 +65,16 @@ export const SignUpScreen = ({ visible, hideModal } : any) => {
       email: email,
       password: password,
       dataNascimento: date.toLocaleDateString(),
-      foto: base64Image,
+      // foto: base64Image,
       administrador: false,
     };
-    register(user);
+    const response = await register(user);
+    console.log(response.status);
+    if (response.status === 200 || response.status === 201) {
+      Alert.alert('Sucesso', 'Usuário cadastrado com sucesso');
+    } else {
+      Alert.alert('Erro', 'Erro ao cadastrar usuário');
+    }
     hideModal();
   };
 
@@ -111,7 +125,6 @@ export const SignUpScreen = ({ visible, hideModal } : any) => {
                   setSexo(itemValue)
                 }
                 style={styles.picker}
-                itemStyle={styles.pickerItem}
               >
                 <Picker.Item label="Selecione seu sexo" value="" />
                 <Picker.Item label="Feminino" value="feminino" />
@@ -147,6 +160,7 @@ export const SignUpScreen = ({ visible, hideModal } : any) => {
               </Button>
               {show && (
                 <DateTimePicker
+                  locale='pt-BR'
                   value={date}
                   mode='date'
                   onChange={onChange}
@@ -154,7 +168,7 @@ export const SignUpScreen = ({ visible, hideModal } : any) => {
                 />
               )}
             </View>
-            <Button
+            {/* <Button
               mode="outlined"
               onPress={pickImage}
             >
@@ -164,7 +178,7 @@ export const SignUpScreen = ({ visible, hideModal } : any) => {
               <View style={{ alignItems: 'center', marginTop: 10 }}>
                 <Image source={{ uri: image }} style={{ width: 100, height: 100 }} />
               </View>
-            )}
+            )} */}
 
           </View>
           <Button mode="contained" onPress={handleRegister}>Cadastrar</Button>
@@ -178,6 +192,7 @@ export const SignUpScreen = ({ visible, hideModal } : any) => {
 const styles = StyleSheet.create({
   input: {
     marginBottom: 10,
+    backgroundColor: '#E5ECF4',
   },
   pickerContainer: {
     flexDirection: 'row',
@@ -191,13 +206,5 @@ const styles = StyleSheet.create({
   },
   picker: {
     flex: 1,
-    borderWidth: 1,
-    borderRadius: 5,
-    backgroundColor: '#EFEFEF', // Add background color
-    marginTop: 5, // Add margin if needed
   },
-  pickerItem: {
-    fontSize: 16, // Customize font size
-    color: 'black', // Customize text color
-  }
 });
