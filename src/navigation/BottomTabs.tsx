@@ -66,7 +66,7 @@ const showBottonTabs = () => {
     ) : (
     <Tab.Navigator
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
         tabBarShowLabel: false,
         tabBarStyle: {
           backgroundColor: "#c3bef7",
