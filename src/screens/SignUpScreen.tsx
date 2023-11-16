@@ -68,8 +68,9 @@ export const SignUpScreen = ({ visible, hideModal }: any) => {
       // foto: base64Image,
       administrador: false,
     };
+    console.log(user);
     const response = await register(user);
-    console.log(response.status);
+    console.log(response);
     if (response.status === 200 || response.status === 201) {
       Alert.alert('Sucesso', 'Usuário cadastrado com sucesso');
     } else {

@@ -23,7 +23,7 @@ const showBottonTabs = () => {
   return user?.isAdmin ? (
     <Tab.Navigator
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         tabBarShowLabel: false,
       }}
       initialRouteName="Minha Localização"
@@ -66,7 +66,7 @@ const showBottonTabs = () => {
     ) : (
     <Tab.Navigator
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
           backgroundColor: "#c3bef7",

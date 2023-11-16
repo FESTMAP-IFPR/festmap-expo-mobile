@@ -8,7 +8,7 @@ export async function register(user: User) {
         sexo: user.sexo,
         email: user.email,
         senha: user.password,
-        data_de_nascimento: "1990-05-23",
+        data_de_nascimento: user.dataNascimento.split('/').reverse().join('-'),
         administrador: user.administrador,
     }, {
         headers: {
@@ -17,6 +17,8 @@ export async function register(user: User) {
     }).catch(function (error) {
         return {
             status: error.response.status,
+            data: error.response.data,
+            todos: error.response
         }
     });
     return response;

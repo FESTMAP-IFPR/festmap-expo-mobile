@@ -47,6 +47,11 @@ export const ProfileScreen = () => {
     signOut();
   };
 
+  const formatarData = (data: string) => {
+    const dataFormatada = new Date(data);
+    return `${dataFormatada.getDate()}/${dataFormatada.getMonth() + 1}/${dataFormatada.getFullYear()}`;
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
@@ -69,26 +74,37 @@ export const ProfileScreen = () => {
       </View>
       
       <View style={styles.infoContainer}>
-        <Text style={styles.info}>Email: {user?.email}</Text>
         <Text style={styles.info}>Nome: {user?.name}</Text>
-       <Button onPress={handleSignOut} title="Sign Out" />
+        <Text style={styles.info}>Email: {user?.email}</Text>
+        <Text style={styles.info}>CPF: {user?.cpf}</Text>
+        <Text style={styles.info}>Data de nascimento: {formatarData(user?.data_de_nascimento!)}</Text>
+        
+        <Button onPress={handleUpload} title="Editar meus dados" />
+        
+        <Button onPress={handleSignOut} title="Sair" />
       </View>
-
+      
     </View>
   );
 };
 
 const makeStyles = (theme: any) =>
   StyleSheet.create({
+    sair:{
+      marginTop: 100
+    },
     container: {
       flex: 1,
-      backgroundColor: theme.blackCustom,
-      padding: 20
+      // backgroundColor: theme.blackCustom,
+      backgroundColor: '#c3bef7',
+      padding: 20,
+      // marginTop: 50,
     },
     profileContainer: {
       alignItems: 'center',
       marginBottom: 20,
       position: 'relative',
+      marginTop: 50,
     },
     profileImage: {
       width: 200,
@@ -128,8 +144,8 @@ const makeStyles = (theme: any) =>
       marginBottom: 100
     },
     info: {
-      fontSize: 24,
-      fontFamily: 'sans-serif',
+      fontSize: 20,
+      // fontFamily: 'sans-serif',
       fontWeight: 'bold',
       marginBottom: 20,
       color: 'black',

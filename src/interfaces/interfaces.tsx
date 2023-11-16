@@ -11,6 +11,9 @@ export interface AuthContextData {
 export interface UserData {
     name: string;
     email: string;
+    cpf: string;
+    data_de_nascimento: string;
+    sexo: string;
     isAdmin: boolean;
 }
 export interface EventData {

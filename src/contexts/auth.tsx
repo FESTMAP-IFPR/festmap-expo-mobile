@@ -2,10 +2,12 @@ import { createContext, useContext, useEffect, useState } from "react";
 import * as auth from "../services/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContextData, UserData } from "../interfaces/interfaces";
+import { login } from "../services/login";
+import { Alert } from "react-native";
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -23,8 +25,24 @@ export const AuthProvider = ({ children }) => {
   });
 
   const signIn = async (email: string, password: string) => {
-    const response = await auth.login(email, password);
+    // const response = await auth.login(email, password);
+    const fazer_login = await login(email, password);
+    const response = {
+      token: "123",
+      user: {
+        name: fazer_login.data.nome,
+        email: fazer_login.data.email,
+        cpf: fazer_login.data.cpf,
+        data_de_nascimento: fazer_login.data.data_de_nascimento,
+        sexo: fazer_login.data.sexo,
+        isAdmin: fazer_login.data.administrador,
+      }
+    };
     const { token, user } = response;
+    if (user.cpf === undefined) {
+      Alert.alert("Atenção", "Usuário não encontrado");
+      return;
+    }
     console.log(response);
     setUser(user);
     await AsyncStorage.setItem("@RNAuth:user", JSON.stringify(response.user));

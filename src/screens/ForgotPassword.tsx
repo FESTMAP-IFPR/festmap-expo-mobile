@@ -41,8 +41,8 @@ export const ForgotPassword = ({ visible, hideModal }: any) => {
         }
 
         const response = await forgot(cpf, email);
-
-        if (response.status === 200 || response.status === 201) {
+        console.log(response);
+        if (response.status === 200 || response.status === 201 && response.data !== "Email não cadastrado") {
             const mensagem = "Senha resetada com sucesso. \n" + "Sua nova senha: " + response.data
             Alert.alert('Sucesso', mensagem, [
                 {

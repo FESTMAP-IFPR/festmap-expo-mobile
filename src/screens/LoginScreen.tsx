@@ -25,11 +25,13 @@ const LoginScreen = () => {
     };
 
     const handleRegister = () => {
-        setIsModalVisible(true); // Supondo que a rota para a tela de cadastro é chamada 'SignUpScreen'
+        setIsModalVisible(true);
     };
+
     const hideModal = () => {
         setIsModalVisible(false);
     };
+
     const hideModalPassword = () => {
         setIsModalVisibleForgotPassword(false);
     }
@@ -38,11 +40,9 @@ const LoginScreen = () => {
         setIsModalVisibleForgotPassword(true);
     };
 
-
     return (
         <KeyboardAwareScrollView contentContainerStyle={styles.container} resetScrollToCoords={{ x: 0, y: 0 }}>
             <Image source={WelcomeImage} style={styles.welcomeImage} />
-
             <Text style={styles.title}>Seja Bem-Vindo!</Text>
 
             <TextInput
@@ -64,32 +64,39 @@ const LoginScreen = () => {
                 <Text style={styles.buttonText}>Entrar</Text>
             </TouchableOpacity>
 
-            <View style={{ height: 100 }} />
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.tercButton} onPress={forgotPassword}>
+                    <Text style={styles.buttonText}>Esqueci minha senha</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity style={styles.tercButton} onPress={forgotPassword}>
-                <Text style={styles.buttonText}>Esqueci minha senha</Text>
-            </TouchableOpacity>
-
-            {/* Botão para abrir o modal */}
-            <TouchableOpacity style={styles.secondaryButton} onPress={handleRegister}>
-                <Text style={styles.secondaryButtonText}>Criar uma conta</Text>
-            </TouchableOpacity>
+                {/* Botão para abrir o modal */}
+                <TouchableOpacity style={styles.secondaryButton} onPress={handleRegister}>
+                    <Text style={styles.buttonText}>Criar uma conta</Text>
+                </TouchableOpacity>
+            </View>
 
             {/* Modal de cadastro */}
             <SignUpScreen visible={isModalVisible} hideModal={hideModal} />
 
             {/* Modal de esqueci minha senha */}
             <ForgotPassword visible={isModalVisibleForgotPassword} hideModal={hideModalPassword} />
-
         </KeyboardAwareScrollView>
     );
 };
 
 const styles = StyleSheet.create({
+    buttonContainer: {
+        paddingTop: 10,
+        alignItems: 'center', // Alinha os botões verticalmente
+        flexDirection: 'row',
+        justifyContent: 'space-between', // Adiciona espaço entre os botões
+        paddingHorizontal: 16,
+        paddingBottom: 16,
+    },
     container: {
         flex: 1,
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: "center", // Alinha todos os elementos no centro
         padding: 20,
         backgroundColor: "#8A44FF",
     },
@@ -115,7 +122,7 @@ const styles = StyleSheet.create({
         borderColor: "#fff",
         padding: 10,
         borderRadius: 15,
-        width: "100%",
+        width: "100%", // Define uma largura fixa para o botão
         marginBottom: 5,
     },
     buttonText: {
@@ -129,26 +136,16 @@ const styles = StyleSheet.create({
         borderColor: "#fff",
         padding: 10,
         borderRadius: 15,
-        width: "100%",
-        marginBottom: 10,
-        position: "absolute",
-        bottom: 0,
-    },
-    secondaryButtonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-        textAlign: "center",
+        width: "45%", // Define uma largura fixa para o botão
+        marginLeft: 30,
     },
     tercButton: {
         borderWidth: 1,
         borderColor: "#fff",
         padding: 10,
         borderRadius: 15,
-        width: "100%",
-        marginBottom: 60,
-        position: "absolute",
-        bottom: 0,
+        width: "55%", // Define uma largura fixa para o botão
+        // marginBottom: 0, // Aumenta o espaço entre os botões
     },
     forgotPasswordLink: {
         color: "#fff",
@@ -157,5 +154,6 @@ const styles = StyleSheet.create({
         textDecorationLine: "underline",
     },
 });
+
 
 export default LoginScreen;
