@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, SafeAreaView, TextInput } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from "../contexts/auth";
@@ -9,7 +9,9 @@ export const ProfileScreen = () => {
   const theme = useTheme();
   const styles = makeStyles(theme);
   const { signOut, user } = useAuth();
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<string | null>(user?.photo_uri || null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedUser, setEditedUser] = useState({ ...user }); 
 
   useEffect(() => {
     (async () => {
@@ -31,14 +33,21 @@ export const ProfileScreen = () => {
 
       if (!result.canceled) {
         setImage(result.assets[0].uri);
+        setEditedUser((prevUser) => ({ ...prevUser, photo: result.assets[0].uri }));
       }
     } catch (error) {
       console.error('Erro ao selecionar imagem:', error);
     }
   };
 
-  const handleUpload = async () => {
-    console.log('Implemente a lógica de upload');
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    setIsEditing(false);
+    // Mock da requisição de atualização do usuário
+    //updateUser(editedUser); // Atualiza o contexto do usuário
   };
 
   const handleSignOut = async () => {
@@ -71,37 +80,46 @@ export const ProfileScreen = () => {
       </View>
 
       <View style={styles.infoContainer}>
-        {[
-          { label: 'Nome', value: user?.name },
-          { label: 'Email', value: user?.email },
-          { label: 'CPF', value: user?.cpf },
-          { label: 'Data de nascimento', value: formatarData(user?.data_de_nascimento!) },
-        ].map(({ label, value }, index) => (
-          <View style={styles.infoItem} key={index}>
-            <Text style={styles.infoLabel}>{label}:</Text>
+      {[
+        { label: 'Nome', value: user?.name, key: 'name' },
+        { label: 'Email', value: user?.email, key: 'email' },
+        { label: 'CPF', value: user?.cpf, key: 'cpf' },
+        { label: 'Data de nascimento', value: formatarData(user?.data_de_nascimento!), key: 'data_de_nascimento' },
+      ].map(({ label, value, key }, index) => (
+        <View style={styles.infoItem} key={index}>
+          <Text style={styles.infoLabel}>{label}:</Text>
+          {isEditing ? (
+            <TextInput
+              style={styles.editableInfoValue}
+              value={editedUser[key] || ''}
+              onChangeText={(text) =>
+                setEditedUser((prevUser) => ({ ...prevUser, [key]: text }))
+              }
+            />
+          ) : (
             <Text style={styles.infoValue}>{value}</Text>
-          </View>
-        ))}
+          )}
+        </View>
+      ))}
 
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.uploadButton}
-            onPress={handleUpload}
-          >
+      <View style={styles.buttonContainer}>
+        {isEditing ? (
+          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+            <Text style={styles.buttonText}>Salvar</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.uploadButton} onPress={handleEdit}>
             <Text style={styles.buttonText}>Editar meus dados</Text>
             <MaterialIcons name="edit" size={20} color="#fff" />
           </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.uploadButton}
-            onPress={handleSignOut}
-          >
-            <Text style={styles.buttonText}>Sair</Text>
-            <MaterialIcons name="exit-to-app" size={20} color="#fff" />
-          </TouchableOpacity>
-        </View>
+        )}
+        <TouchableOpacity style={styles.uploadButton} onPress={handleSignOut}>
+          <Text style={styles.buttonText}>Sair</Text>
+          <MaterialIcons name="exit-to-app" size={20} color="#fff" />
+        </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
+  </SafeAreaView>
   );
 };
 
@@ -183,6 +201,22 @@ const makeStyles = (theme: any) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       marginTop: 200,
+    },
+    editableInfoValue: {
+      color: "#FFFF",
+      backgroundColor: theme.colors.primary,
+      padding: 7,
+      paddingHorizontal: 15,
+      borderRadius: 50,
+      flexShrink: 1,
+    },
+    saveButton: {
+      backgroundColor: theme.colors.primary,
+      borderRadius: 50,
+      padding: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 10,
     },
   });
 

@@ -67,6 +67,7 @@ export const SignUpScreen = ({ visible, hideModal }: any) => {
       dataNascimento: date.toLocaleDateString(),
       // foto: base64Image,
       administrador: false,
+      photo_uri: ''
     };
     console.log(user);
     const response = await register(user);

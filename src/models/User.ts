@@ -5,6 +5,6 @@ export interface User {
     email: string;
     password: string;
     dataNascimento: string;
-    // foto: string;
+    photo_uri: string;
     administrador: boolean;
 }

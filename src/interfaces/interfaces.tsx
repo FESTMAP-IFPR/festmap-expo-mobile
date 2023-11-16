@@ -14,6 +14,7 @@ export interface UserData {
     cpf: string;
     data_de_nascimento: string;
     sexo: string;
+    photo_uri: string;
     isAdmin: boolean;
 }
 export interface EventData {
