@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, Button } from 'react-native';
-import { MD3Theme, useTheme } from 'react-native-paper';
+import { View, Text, TouchableOpacity, Image, StyleSheet, SafeAreaView } from 'react-native';
+import { useTheme } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from "../contexts/auth";
-import { MaterialIcons } from '@expo/vector-icons'; // Importe MaterialIcons
+import { MaterialIcons } from '@expo/vector-icons';
 
 export const ProfileScreen = () => {
   const theme = useTheme();
@@ -38,22 +38,20 @@ export const ProfileScreen = () => {
   };
 
   const handleUpload = async () => {
-    // Implemente lógica de upload aqui
     console.log('Implemente a lógica de upload');
   };
 
   const handleSignOut = async () => {
-    // Adicione a lógica de signOut aqui
     signOut();
   };
 
   const formatarData = (data: string) => {
     const dataFormatada = new Date(data);
     return `${dataFormatada.getDate()}/${dataFormatada.getMonth() + 1}/${dataFormatada.getFullYear()}`;
-  }
+  };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.profileContainer}>
         {image ? (
           <View>
@@ -62,7 +60,6 @@ export const ProfileScreen = () => {
               <MaterialIcons name="photo-camera" size={40} color="#fff" />
             </TouchableOpacity>
           </View>
-
         ) : (
           <View style={styles.placeholder}>
             <MaterialIcons name="person" size={100} color="#fff" />
@@ -72,33 +69,48 @@ export const ProfileScreen = () => {
           </View>
         )}
       </View>
-      
+
       <View style={styles.infoContainer}>
-        <Text style={styles.info}>Nome: {user?.name}</Text>
-        <Text style={styles.info}>Email: {user?.email}</Text>
-        <Text style={styles.info}>CPF: {user?.cpf}</Text>
-        <Text style={styles.info}>Data de nascimento: {formatarData(user?.data_de_nascimento!)}</Text>
-        
-        <Button onPress={handleUpload} title="Editar meus dados" />
-        
-        <Button onPress={handleSignOut} title="Sair" />
+        {[
+          { label: 'Nome', value: user?.name },
+          { label: 'Email', value: user?.email },
+          { label: 'CPF', value: user?.cpf },
+          { label: 'Data de nascimento', value: formatarData(user?.data_de_nascimento!) },
+        ].map(({ label, value }, index) => (
+          <View style={styles.infoItem} key={index}>
+            <Text style={styles.infoLabel}>{label}:</Text>
+            <Text style={styles.infoValue}>{value}</Text>
+          </View>
+        ))}
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.uploadButton}
+            onPress={handleUpload}
+          >
+            <Text style={styles.buttonText}>Editar meus dados</Text>
+            <MaterialIcons name="edit" size={20} color="#fff" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.uploadButton}
+            onPress={handleSignOut}
+          >
+            <Text style={styles.buttonText}>Sair</Text>
+            <MaterialIcons name="exit-to-app" size={20} color="#fff" />
+          </TouchableOpacity>
+        </View>
       </View>
-      
-    </View>
+    </SafeAreaView>
   );
 };
 
 const makeStyles = (theme: any) =>
   StyleSheet.create({
-    sair:{
-      marginTop: 100
-    },
     container: {
       flex: 1,
-      // backgroundColor: theme.blackCustom,
       backgroundColor: '#c3bef7',
       padding: 20,
-      // marginTop: 50,
     },
     profileContainer: {
       alignItems: 'center',
@@ -116,7 +128,7 @@ const makeStyles = (theme: any) =>
       width: 200,
       height: 200,
       borderRadius: 100,
-      backgroundColor: '#777', // Cor do placeholder
+      backgroundColor: '#777',
       justifyContent: 'center',
       alignItems: 'center',
       position: 'relative',
@@ -128,31 +140,49 @@ const makeStyles = (theme: any) =>
       backgroundColor: theme.colors.primary,
       borderRadius: 50,
       padding: 10,
-      zIndex: 2, // Ajuste o índice de ordem para garantir que esteja acima do placeholder
+      zIndex: 2,
     },
     uploadButton: {
       backgroundColor: theme.colors.primary,
       borderRadius: 50,
       padding: 10,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 10,
     },
-    placeholderText: {
+    buttonText: {
+      fontFamily: 'sans-serif',
       color: '#fff',
-      fontSize: 16,
+      marginRight: 10,
     },
     infoContainer: {
       marginTop: 15,
-      marginBottom: 100
+      marginBottom: 150,
     },
-    info: {
-      fontSize: 20,
-      // fontFamily: 'sans-serif',
+    infoItem: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 15,
+    },
+    infoLabel: {
+      color: "#000000",
+      marginRight: 10,
       fontWeight: 'bold',
-      marginBottom: 20,
-      color: 'black',
-      textAlign: 'left',
+    },
+    infoValue: {
+      color: "#FFFF",
+      backgroundColor: theme.colors.primary,
+      padding: 7,
+      paddingHorizontal: 15,
+      borderRadius: 50,
+      flexShrink: 1,
     },
     buttonContainer: {
       flexDirection: 'row',
-      justifyContent: 'space-around',
+      justifyContent: 'space-between',
+      marginTop: 200,
     },
   });
+
