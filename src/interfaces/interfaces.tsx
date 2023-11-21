@@ -8,14 +8,15 @@ export interface AuthContextData {
 }
 
 export interface UserData {
-    _id: string | null | undefined;
-    name: string;
-    email: string;
-    cpf: string;
-    data_de_nascimento: string;
-    sexo: string;
-    photo_uri: string;
-    isAdmin: boolean;
+  _id: string | null | undefined;
+  name: string;
+  email: string;
+  cpf: string;
+  data_de_nascimento: string;
+  sexo: string;
+  photo_uri: string;
+  isAdmin: boolean;
+  senha: string;
 }
 export interface EventData {
   nome?: string;

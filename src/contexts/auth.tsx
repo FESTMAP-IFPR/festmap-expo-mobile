@@ -25,7 +25,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   });
 
   const signIn = async (email: string, password: string) => {
-
     const fazer_login = await login(email, password);
 
     const response = {
@@ -41,7 +40,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isAdmin: fazer_login.data.administrador,
       }
     };
-    console.log(fazer_login.data)
 
     const { token, user } = response;
     if (user.cpf === undefined) {

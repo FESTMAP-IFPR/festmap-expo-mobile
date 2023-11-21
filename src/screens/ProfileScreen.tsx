@@ -9,22 +9,28 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { UserData } from '../interfaces/interfaces';
 import { User } from '../models/User';
 import { format } from 'date-fns';
+import * as FileSystem from 'expo-file-system';
 
 export const ProfileScreen = () => {
   const theme = useTheme();
   const styles = makeStyles(theme);
   const { signOut, user } = useAuth();
-  const [image, setImage] = useState<string | null>(user?.photo_uri || null);
+  const [image, setImage] = useState<string | null>(convertBase64ToImage(user?.photo_uri!) || null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({ ...user });
   const [date, setDate] = useState(user?.data_de_nascimento || "");
   const [showDatePicker, setShowDatePicker] = useState(false);
 
+
+  function convertBase64ToImage(base64: string) {
+    return `data:image/png;base64,${base64}`;
+  }
+
   useEffect(() => {
     (async () => {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
-        console.error('Permission to access media library was denied');
+        console.error('Permissão para acessar a galeria negada!');
       }
     })();
   }, []);
@@ -33,8 +39,9 @@ export const ProfileScreen = () => {
     const dataFormatada = new Date(data);
     return format(dataFormatada, 'dd/MM/yyyy');
   };
-  
+
   const selectImage = async () => {
+    var image_base64 = '';
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -42,14 +49,18 @@ export const ProfileScreen = () => {
         aspect: [4, 3],
         quality: 1,
       });
-
+      // console.log(result.assets[0].uri);
+      if (result.assets && result.assets.length > 0) {
+        image_base64 = await FileSystem.readAsStringAsync(result.assets[0].uri, { encoding: 'base64' });
+      }
       if (!result.canceled) {
         setImage(result.assets[0].uri);
-        setEditedUser((prevUser) => ({ ...prevUser, photo_uri: result.assets[0].uri }));
+        setEditedUser((prevUser) => ({ ...prevUser, photo_uri: image_base64 }));
       }
     } catch (error) {
       console.error('Erro ao selecionar imagem:', error);
     }
+    // console.log('Imagem selecionada base64:', image_base64);
   };
 
   const handleEdit = () => {
@@ -59,7 +70,7 @@ export const ProfileScreen = () => {
   const handleSave = () => {
     setIsEditing(false);
     // Mock da requisição de atualização do usuário
-
+    // console.log('Atualizando usuário:', editedUser.senha);
     const sanitizedUser: UserData = {
       _id: editedUser._id || '',
       name: editedUser.name || '',  // Se name for undefined, use uma string vazia
@@ -69,9 +80,16 @@ export const ProfileScreen = () => {
       sexo: editedUser.sexo || '',  // Se sexo for undefined, use uma string vazia
       photo_uri: editedUser.photo_uri || '',  // Se photo_uri for undefined, use uma string vazia
       isAdmin: editedUser.isAdmin || false,  // Se isAdmin for undefined, use false
+      senha: editedUser.senha || '',  // Se senha for undefined, use uma string vazia
     };
+    // console.log(sanitizedUser.photo_uri)
+    // atualizar a const user
+    user && (user.name = sanitizedUser.name);
+    user && (user.email = sanitizedUser.email);
+    user && (user.cpf = sanitizedUser.cpf);
+    user && (user.data_de_nascimento = sanitizedUser.data_de_nascimento);
 
-    console.log(sanitizedUser)
+    // console.log(sanitizedUser);
 
     update(sanitizedUser); // Atualiza o contexto do usuário
   };
@@ -89,7 +107,7 @@ export const ProfileScreen = () => {
 
     if (event.type === 'set' && selectedDate) {
 
-      const stringDate = selectedDate.toISOString(); 
+      const stringDate = selectedDate.toISOString();
 
       setEditedUser((prevUser) => ({
         ...prevUser,
@@ -98,7 +116,7 @@ export const ProfileScreen = () => {
 
       setDate(stringDate);
 
-      console.log(editedUser)
+      // console.log(editedUser)
     }
   };
 
@@ -108,9 +126,11 @@ export const ProfileScreen = () => {
         {image ? (
           <View>
             <Image source={{ uri: image }} style={styles.profileImage} />
-            <TouchableOpacity style={styles.selectImageButton} onPress={selectImage}>
-              <MaterialIcons name="photo-camera" size={40} color="#fff" />
-            </TouchableOpacity>
+            {isEditing && (
+              <TouchableOpacity style={styles.selectImageButton} onPress={selectImage}>
+                <MaterialIcons name="photo-camera" size={40} color="#fff" />
+              </TouchableOpacity>
+            )}
           </View>
         ) : (
           <View style={styles.placeholder}>
@@ -127,11 +147,8 @@ export const ProfileScreen = () => {
           { label: 'Nome', value: user?.name, key: 'name' },
           { label: 'Email', value: user?.email, key: 'email' },
           { label: 'CPF', value: user?.cpf, key: 'cpf' },
-          {
-            label: 'Data de nascimento',
-            value: date,
-            key: 'data_de_nascimento',
-          },
+          { label: 'Data de nascimento', value: date, key: 'data_de_nascimento' },
+          { label: 'Senha', value: '********', key: 'senha' },
         ].map(({ label, value, key }, index) => (
           <View style={styles.infoItem} key={index}>
             <Text style={styles.infoLabel}>{label}:</Text>
@@ -153,7 +170,7 @@ export const ProfileScreen = () => {
                   style={styles.editableInfoValue}
                   value={editedUser[key] || ''}
                   onChangeText={(text) => {
-                    console.log(`Changing ${key} to: ${text}`);
+                    // console.log(`Changing ${key} to: ${text}`);
                     setEditedUser((prevUser) => ({
                       ...prevUser,
                       [key]: text,
@@ -276,7 +293,7 @@ const makeStyles = (theme: any) =>
     buttonContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      marginTop: 100,
+      marginTop: '20%',
     },
     editableInfoValue: {
       color: "#FFFF",
