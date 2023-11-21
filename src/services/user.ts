@@ -1,16 +1,17 @@
 import { api } from './api';
-import { User } from '../models/User';
+import { UserData } from '../interfaces/interfaces';
 
-export async function update(user: User) {
-    const response = await api.put('user/update', {
+
+export async function update(user: UserData) {
+    const response = await api.post('user/update', {
+        _id: user._id,
         nome: user.name,
         cpf: user.cpf,
         sexo: user.sexo,
         email: user.email,
-        senha: user.password,
-        photo_uri: user.photo_uri,
-        data_de_nascimento: user.dataNascimento.split('/').reverse().join('-'),
-        administrador: user.administrador,
+        data_de_nascimento: user.data_de_nascimento.split('/').reverse().join('-'),
+        administrador: user.isAdmin,
+        photo_uri: user.photo_uri
     }, {
         headers: {
             'Content-Type': 'application/json'
@@ -22,5 +23,6 @@ export async function update(user: User) {
             todos: error.response
         }
     });
+    console.log(user)
     return response;
 }

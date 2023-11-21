@@ -1,4 +1,3 @@
-import { ImageSourcePropType } from "react-native";
 
 export interface AuthContextData {
   signed: boolean;
@@ -9,6 +8,7 @@ export interface AuthContextData {
 }
 
 export interface UserData {
+    _id: string | null | undefined;
     name: string;
     email: string;
     cpf: string;

@@ -25,25 +25,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   });
 
   const signIn = async (email: string, password: string) => {
-    // const response = await auth.login(email, password);
+
     const fazer_login = await login(email, password);
+
     const response = {
       token: "123",
       user: {
+        _id: fazer_login.data._id,
         name: fazer_login.data.nome,
         email: fazer_login.data.email,
         cpf: fazer_login.data.cpf,
         data_de_nascimento: fazer_login.data.data_de_nascimento,
         sexo: fazer_login.data.sexo,
+        photo_uri: fazer_login.data.photo_uri,
         isAdmin: fazer_login.data.administrador,
       }
     };
+    console.log(fazer_login.data)
+
     const { token, user } = response;
     if (user.cpf === undefined) {
       Alert.alert("Atenção", "Usuário não encontrado");
       return;
     }
-    console.log(response);
     setUser(user);
     await AsyncStorage.setItem("@RNAuth:user", JSON.stringify(response.user));
     await AsyncStorage.setItem("@RNAuth:token", response.token);

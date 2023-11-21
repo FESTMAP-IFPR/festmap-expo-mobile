@@ -10,6 +10,7 @@ export async function register(user: User) {
         senha: user.password,
         data_de_nascimento: user.dataNascimento.split('/').reverse().join('-'),
         administrador: user.administrador,
+        photo_uri: ''
     }, {
         headers: {
             'Content-Type': 'application/json'
