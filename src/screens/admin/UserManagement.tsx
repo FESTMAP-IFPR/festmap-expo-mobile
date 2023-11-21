@@ -71,10 +71,13 @@ const makeStyles = (theme: MD3Theme) =>
     container: {
       flex: 1,
       padding: 20,
-      backgroundColor: "#151515",
+      backgroundColor: '#c3bef7',
     },
     inputContainer: {
-      marginBottom: 10,
+      alignContent: "center",
+      justifyContent: "center",
+      marginTop: '10%',
+      marginBottom: '10%',
     },
     input: {
       height: 40,

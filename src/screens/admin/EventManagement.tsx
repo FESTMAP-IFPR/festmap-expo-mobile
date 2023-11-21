@@ -54,9 +54,6 @@ export const ManageEventsScreen = () => {
           value={newEvent.date}
           onChangeText={(text) => setNewEvent({ ...newEvent, date: text })}
         />
-        <TouchableOpacity style={styles.addButton} onPress={addEvent}>
-          <Text style={styles.buttonText}>Criar Evento</Text>
-        </TouchableOpacity>
       </View>
 
       {/* List of events */}
@@ -87,17 +84,20 @@ const makeStyles = (theme: MD3Theme) =>
     container: {
       flex: 1,
       padding: 20,
-      backgroundColor: "#151515",
+      backgroundColor: "#c3bef7",
     },
     title: {
       fontSize: 24,
       fontWeight: "bold",
       marginBottom: 20,
-      color: theme.colors.primary,
+      // color: theme.colors.primary,
       textAlign: "center",
     },
     inputContainer: {
-      marginBottom: 10,
+      alignContent: "center",
+      justifyContent: "center",
+      marginTop: '10%',
+      marginBottom: '10%',
     },
     input: {
       height: 40,
@@ -107,7 +107,7 @@ const makeStyles = (theme: MD3Theme) =>
       marginBottom: 10,
     },
     addButton: {
-      backgroundColor: theme.colors.primary,
+      // backgroundColor: theme.colors.primary,
       padding: 10,
       borderRadius: 5,
     },

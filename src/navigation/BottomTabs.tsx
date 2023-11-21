@@ -6,10 +6,10 @@ import { HomeScreen } from "../screens/HomeScreen";
 import { ManageEventsScreen } from "../screens/admin/EventManagement"
 import { UserManagementScreen } from "../screens/admin/UserManagement";
 import { useAuth } from "../contexts/auth";
-import { useTheme, Avatar} from "react-native-paper";
+import { useTheme, Avatar } from "react-native-paper";
 // import { EventsScreen } from "../screens/EventsScreen";
 import { EventsStackNavigator } from "./EventsStackNavigator";
-import { Entypo, Ionicons, MaterialIcons} from '@expo/vector-icons'; 
+import { Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 const showBottonTabs = () => {
@@ -25,45 +25,48 @@ const showBottonTabs = () => {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
+        tabBarStyle: {
+          backgroundColor: "#c3bef7",
+        },
       }}
-      initialRouteName="Minha Localização"
+      initialRouteName="Gerenciamento de Usuários"
     >
       <Tab.Screen
-          name="Gerenciamento de Usuários"
-          component={UserManagementScreen}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <>
-              <MaterialIcons name="groups" size={40} color="white" />
-              </>
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Gerenciamento de Eventos"
-          component={ManageEventsScreen}
-          options={{
+        name="Gerenciamento de Usuários"
+        component={UserManagementScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <>
+              <MaterialIcons name="groups" size={40} color={"#151515"} />
+            </>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Gerenciamento de Eventos"
+        component={ManageEventsScreen}
+        options={{
 
-            tabBarIcon: ({ focused }) => (
-              <>
-                <Entypo name="calendar" size={40} color={"white"}/>
-              </>
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Meu perfil"
-          component={ProfileScreen}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <>
-                <Ionicons name="person" size={40} color="white" />
-              </>
-            ),
-          }}
-        />
+          tabBarIcon: ({ focused }) => (
+            <>
+              <Entypo name="calendar" size={40} color={"#151515"} />
+            </>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Meu perfil"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <>
+              <Ionicons name="person" size={40} color={"#151515"} />
+            </>
+          ),
+        }}
+      />
     </Tab.Navigator>
-    ) : (
+  ) : (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
@@ -81,7 +84,7 @@ const showBottonTabs = () => {
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <>
-             <MaterialIcons name="event" size={40} color="#151515" />
+              <MaterialIcons name="event" size={40} color="#151515" />
             </>
           ),
         }}
@@ -92,7 +95,7 @@ const showBottonTabs = () => {
         options={{
           tabBarIcon: ({ focused }) => (
             <>
-              <Entypo name="location-pin" size={40} color={"#151515"}/>
+              <Entypo name="location-pin" size={40} color={"#151515"} />
             </>
           ),
         }}
