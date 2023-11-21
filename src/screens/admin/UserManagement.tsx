@@ -71,7 +71,7 @@ export const UserManagementScreen = () => {
     user.nome.toLowerCase().includes(searchValue.toLowerCase())
   );
   const [expandedCardId, setExpandedCardId] = useState(null);
-  const toggleCardExpansion = (id) => {
+  const toggleCardExpansion = (id: null) => {
     setExpandedCardId((prevId) => (prevId === id ? null : id));
   };
 

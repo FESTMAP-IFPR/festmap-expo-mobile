@@ -33,3 +33,18 @@ export const getEventList = (): Promise<EventData[]> => {
     });
   });
 };
+
+export const deleteEvent = async (id: string) => {
+  const response = await api.post("event/delete", { id: id }, {
+    headers: {
+      "Content-Type": "application/json",
+    }
+  }).catch(function (error) {
+    return {
+      status: error.response.status,
+      data: error.response.data,
+      todos: error.response,
+    };
+  });
+  return response;
+}
