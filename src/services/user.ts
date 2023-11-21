@@ -23,6 +23,31 @@ export async function update(user: UserData) {
             todos: error.response
         }
     });
-    console.log(user)
+    return response;
+}
+
+export async function findAll() {
+    const response = await api.get('user/find-all').catch(function (error) {
+        return {
+            status: error.response.status,
+            data: error.response.data,
+            todos: error.response
+        }
+    });
+    return response;
+}
+
+export async function deleteByEmail(email: string) {
+    const response = await api.post('user/delete-by-email', { email: email }, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).catch(function (error) {
+        return {
+            status: error.response.status,
+            data: error.response.data,
+            todos: error.response
+        }
+    });
     return response;
 }

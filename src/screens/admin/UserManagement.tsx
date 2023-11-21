@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Alert } from "react-native";
+import { findAll, deleteByEmail } from "../../services/user";
 import {
   View,
   Text,
@@ -10,28 +12,68 @@ import {
 import { MD3Theme, useTheme } from "react-native-paper";
 
 export const UserManagementScreen = () => {
+  const [userToRemove, setUserToRemove] = useState(String);
   const theme = useTheme();
   const styles = makeStyles(theme);
+  const [users, setUsers] = useState([] as any[]);
 
-  // Mocked-up user data for demonstration purposes
-  const [users, setUsers] = useState([
-    { id: 1, name: "User 1", email: "user1@example.com" },
-    { id: 2, name: "User 2", email: "user2@example.com" },
-    { id: 3, name: "User 3", email: "user3@example.com" },
-  ]);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const usersResponse = await findAll();
+        const usersArray = usersResponse.data.map((user: { nome: any; email: any; cpf: any; data_de_nascimento: any; }, index: any) => ({
+          id: index,
+          nome: user.nome,
+          email: user.email,
+          cpf: user.cpf,
+          data_de_nascimento: user.data_de_nascimento,
+        }));
+        setUsers(usersArray);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const [searchValue, setSearchValue] = useState(""); // State for search value
 
   // Function to remove a user
-  const removeUser = (userId: number) => {
-    const updatedUsers = users.filter((user) => user.id !== userId);
-    setUsers(updatedUsers);
+  const removeUser = (userEmail: string) => {
+    setUserToRemove(userEmail);
+    Alert.alert(
+      'Confirmação',
+      `Tem certeza que deseja remover o usuário com o email ${userEmail}?`,
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+          onPress: () => setUserToRemove(""),
+        },
+        {
+          text: 'Remover',
+          onPress: () => [deleteByEmail(userEmail), setUsers(prevUsers => prevUsers.filter(user => user.email !== userEmail))],
+        },
+      ],
+      { cancelable: false }
+    );
+
   };
+
+  function formataData(data: string) {
+    const dataFormatada = data.split('T')[0].split('-');
+    return dataFormatada[2] + '/' + dataFormatada[1] + '/' + dataFormatada[0];
+  }
 
   // Filter users based on searchValue
   const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchValue.toLowerCase())
+    user.nome.toLowerCase().includes(searchValue.toLowerCase())
   );
+  const [expandedCardId, setExpandedCardId] = useState(null);
+  const toggleCardExpansion = (id) => {
+    setExpandedCardId((prevId) => (prevId === id ? null : id));
+  };
 
   return (
     <View style={styles.container}>
@@ -49,17 +91,26 @@ export const UserManagementScreen = () => {
         data={filteredUsers}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.userItem}>
-            <Text style={styles.userInfo}>
-              {item.name} ({item.email})
-            </Text>
-            <TouchableOpacity
-              style={styles.removeButton}
-              onPress={() => removeUser(item.id)}
-            >
-              <Text style={styles.buttonText}>Remover</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity onPress={() => toggleCardExpansion(item.id)}>
+            <View style={styles.userItem}>
+              <Text >{item.nome}</Text>
+              <TouchableOpacity
+                style={styles.removeButton}
+                onPress={() => removeUser(item.email)}
+              >
+                <Text style={styles.buttonText}>Remover</Text>
+              </TouchableOpacity>
+            </View>
+            {expandedCardId === item.id && (
+              <View style={styles.userItem}>
+                <View>
+                  <Text>Email:<Text> {item.email}</Text></Text>
+                  <Text>CPF:<Text> {item.cpf}</Text></Text>
+                  <Text>Data de Nascimento:<Text> {formataData(item.data_de_nascimento)}</Text></Text>
+                </View>
+              </View>
+            )}
+          </TouchableOpacity>
         )}
       />
     </View>
