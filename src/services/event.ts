@@ -1,6 +1,7 @@
 import { EventData } from "../interfaces/interfaces";
 import axios from "axios";
 import { api } from "./api";
+import { Alert } from "react-native";
 
 export const createEvent = async (event: EventData) => {
   try {
@@ -27,10 +28,18 @@ export const createEvent = async (event: EventData) => {
 
 export const getEventList = (): Promise<EventData[]> => {
   return new Promise((resolve) => {
-    api.get<EventData[]>("/event/find-all").then((response) => {
-      console.log(response.data);
-      resolve(response.data);
-    });
+    api
+      .get<EventData[]>("/event/find-all")
+      .then((response) => {
+        console.log(response.data);
+        resolve(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error.response.data);
+        Alert.alert(error.response.data.message);
+        throw error;
+      });
   });
 };
 

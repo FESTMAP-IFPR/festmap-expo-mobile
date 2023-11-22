@@ -6,7 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  FlatList
+  FlatList,
+  Alert,
 } from "react-native";
 import { DrawerLayout, ScrollView } from "react-native-gesture-handler";
 import { Appbar, Button, FAB } from "react-native-paper";
@@ -20,7 +21,9 @@ import { EventItem } from "../../components/EventItem";
 import { EventData } from "../../interfaces/interfaces";
 
 const av = new Animated.Value(0);
-av.addListener(() => {return});
+av.addListener(() => {
+  return;
+});
 
 export const EventsScreen = (props: any) => {
   const theme = useTheme();
@@ -29,59 +32,75 @@ export const EventsScreen = (props: any) => {
   const [events, setEvents] = useState<EventData[]>([]);
   const styles = makeStyles(theme);
   const handleOpenNewEvent = () => {
-    navigation.navigate('CreateEventScreen');
+    navigation.navigate("CreateEventScreen");
   };
 
   useEffect(() => {
-    getEventList().then((data) => setEvents(data))
-  },[]);
+    Alert.alert("useEffect");
+    navigation.addListener("focus", () => {
+      getEventList()
+        .then((data) => setEvents(data))
+        .catch((err) => alert(err))
+        .finally(() => {
+          console.log(events);
+        });
+    });
+  }, []);
 
   return (
     <SafeAreaView className="bg-purple-50 ">
-        {/* search Bar */}
-        <View className="flex-row items-center space-x-2 px-4 pb-2">
-          <View className="flex-row flex-1 items-center p-3 rounded-full border border-gray-300 ">
-              <Icon.Search height="25" width="25" stroke="gray"/>
-              <TextInput placeholder="Eventos" className="ml-2 flex-1" />
-              <View className="flex-row items-center space-x-1 border-0 border-l-2 pl-2 border-l-gray-300">
-                <Icon.MapPin height={20} width={20} stroke={"gray"} />
-                <Text className="text-gray-600">Foz Do Iguaçu, PR</Text>
-              </View> 
+      {/* search Bar */}
+      <View className="flex-row items-center space-x-2 px-4 pb-2">
+        <View className="flex-row flex-1 items-center p-3 rounded-full border border-gray-300 ">
+          <Icon.Search height="25" width="25" stroke="gray" />
+          <TextInput placeholder="Eventos" className="ml-2 flex-1" />
+          <View className="flex-row items-center space-x-1 border-0 border-l-2 pl-2 border-l-gray-300">
+            <Icon.MapPin height={20} width={20} stroke={"gray"} />
+            <Text className="text-gray-600">Foz Do Iguaçu, PR</Text>
           </View>
-          <View className="p-3 bg-gray-300 rounded-full">
-              <Icon.Sliders height={20} width={20} strokeWidth={2.5}  stroke={"white"}/>
-          </View>
-          <TouchableOpacity
-            onPress={handleOpenNewEvent}>
-            <View
-              className="p-3 bg-green-500 rounded-full">
-                <Icon.Plus height={20} width={20} strokeWidth={2.5}  stroke={"white"}/>
-            </View>
-          </TouchableOpacity>
         </View>
-        {/* main */}
-        <View>
-          <ScrollView  showsVerticalScrollIndicator={false}
+        <View className="p-3 bg-gray-300 rounded-full">
+          <Icon.Sliders
+            height={20}
+            width={20}
+            strokeWidth={2.5}
+            stroke={"white"}
+          />
+        </View>
+        <TouchableOpacity onPress={handleOpenNewEvent}>
+          <View className="p-3 bg-green-500 rounded-full">
+            <Icon.Plus
+              height={20}
+              width={20}
+              strokeWidth={2.5}
+              stroke={"white"}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
+      {/* main */}
+      <View>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
           contentContainerStyle={{
-            paddingTop:20,
-            paddingBottom:20,
-          }}>
-            {/* categories */}
-            {/* <Categories/> */}
-          </ScrollView>
-        </View>
-        <View className=" min-h-screen bg-purple-200">
-          {/* events */}
-          <FlatList
-            className=" h-full"
-            data={events}
-            renderItem={({ item }) => {
-              return (<EventItem {...item} /> 
-              )
-            }}
-          ></FlatList>
-
-          </View>
+            paddingTop: 20,
+            paddingBottom: 20,
+          }}
+        >
+          {/* categories */}
+          {/* <Categories/> */}
+        </ScrollView>
+      </View>
+      <View className=" min-h-screen bg-purple-200">
+        {/* events */}
+        <FlatList
+          className=" h-full"
+          data={events}
+          renderItem={({ item }) => {
+            return <EventItem {...item} />;
+          }}
+        ></FlatList>
+      </View>
     </SafeAreaView>
   );
 };
