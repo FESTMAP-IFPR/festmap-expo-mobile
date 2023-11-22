@@ -1,4 +1,3 @@
-
 export interface AuthContextData {
   signed: boolean;
   user: UserData | null;
@@ -18,6 +17,21 @@ export interface UserData {
   isAdmin: boolean;
   senha: string;
 }
+export interface AddressData {
+  pais?: string;
+  estado?: string;
+  cidade?: string;
+  bairro?: string;
+  rua?: string;
+  numero?: number;
+  cep?: string;
+}
+
+export interface LocationData {
+  type?: string;
+  coordinates?: number[];
+}
+
 export interface EventData {
   nome?: string;
   descricao?: string;
@@ -27,5 +41,6 @@ export interface EventData {
   categoria?: string;
   classificacao?: string;
   image?: string;
-  localizacao?: {};
+  localizacao?: LocationData;
+  endereco?: AddressData;
 }
