@@ -50,6 +50,31 @@ export const EventsScreen = (props: any) => {
   return (
     <SafeAreaView className="bg-purple-50 ">
       {/* search Bar */}
+      <View className="flex-row items-center justify-between space-x-2 m-2 p-2">
+        <View>
+          <Text className="text-2xl font-bold">Eventos</Text>
+        </View>
+        <View className="flex-row gap-2 p-2">
+          <View className="p-3 bg-gray-300 rounded-full">
+            <Icon.Sliders
+              height={20}
+              width={20}
+              strokeWidth={2.5}
+              stroke={"white"}
+            />
+          </View>
+          <TouchableOpacity onPress={handleOpenNewEvent}>
+            <View className="p-3 bg-green-500 rounded-full">
+              <Icon.Plus
+                height={20}
+                width={20}
+                strokeWidth={2.5}
+                stroke={"white"}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
       <View className="flex-row items-center space-x-2 px-4 pb-2">
         <View className="flex-row flex-1 items-center p-3 rounded-full border border-gray-300 ">
           <Icon.Search height="25" width="25" stroke="gray" />
@@ -59,24 +84,6 @@ export const EventsScreen = (props: any) => {
             <Text className="text-gray-600">Foz Do Iguaçu, PR</Text>
           </View>
         </View>
-        <View className="p-3 bg-gray-300 rounded-full">
-          <Icon.Sliders
-            height={20}
-            width={20}
-            strokeWidth={2.5}
-            stroke={"white"}
-          />
-        </View>
-        <TouchableOpacity onPress={handleOpenNewEvent}>
-          <View className="p-3 bg-green-500 rounded-full">
-            <Icon.Plus
-              height={20}
-              width={20}
-              strokeWidth={2.5}
-              stroke={"white"}
-            />
-          </View>
-        </TouchableOpacity>
       </View>
       {/* main */}
       <View>
