@@ -39,7 +39,13 @@ export const EventsStackNavigator = () => {
       />
       <Stack.Screen name="AddEventScreen" component={AddEventScreen} />
       <Stack.Screen name="CreateEventScreen" component={CreateEventScreen} />
-      <Stack.Screen name="EventDetailsScreen" component={EventDetailsScreen} />
+      <Stack.Screen
+        name="EventDetailsScreen"
+        component={EventDetailsScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
       <Stack.Screen
         name="SelectLocationScreen"
         component={SelectLocationScreen}
