@@ -9,28 +9,19 @@ import {
   FlatList,
   Alert,
 } from "react-native";
-import { DrawerLayout, ScrollView } from "react-native-gesture-handler";
-import { Appbar, Button, FAB } from "react-native-paper";
+import { ScrollView } from "react-native-gesture-handler";
 import { Animated } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
 import * as Icon from "react-native-feather";
-import Categories from "../../components/Categories";
 import { getEventList } from "../../services/event";
 import { EventItem } from "../../components/EventItem";
 import { EventData } from "../../interfaces/interfaces";
-
-const av = new Animated.Value(0);
-av.addListener(() => {
-  return;
-});
 
 export const EventsScreen = (props: any) => {
   const theme = useTheme();
 
   const { navigation } = props;
   const [events, setEvents] = useState<EventData[]>([]);
-  const styles = makeStyles(theme);
   const handleOpenNewEvent = () => {
     navigation.navigate("CreateEventScreen");
   };
@@ -40,7 +31,7 @@ export const EventsScreen = (props: any) => {
     navigation.addListener("focus", () => {
       getEventList()
         .then((data) => setEvents(data))
-        .catch((err) => alert(err))
+        .catch((err) => Alert.alert(err))
         .finally(() => {
           console.log(events);
         });

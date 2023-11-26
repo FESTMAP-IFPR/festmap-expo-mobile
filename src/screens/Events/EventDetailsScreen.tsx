@@ -1,5 +1,5 @@
 import { useNavigation, useRoute } from "@react-navigation/core";
-import { View, Image, TouchableOpacity } from "react-native";
+import { View, Image, TouchableOpacity, Alert } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { EventData } from "../../interfaces/interfaces";
 import { Text } from "react-native";
@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import calculateDistance from "../../utils/calculateDistance";
 import { AntDesign, MaterialIcons, SimpleLineIcons } from "@expo/vector-icons";
 import * as Icon from "react-native-feather";
+import { deleteEvent } from "../../services/event";
 
 export function EventDetailsScreen() {
   const [event, setEvent] = useState<EventData | null>(null);
@@ -69,6 +70,34 @@ export function EventDetailsScreen() {
     setDistance(resultDistance);
   };
 
+  const confirmDelete = () => {
+    Alert.alert(
+      "Deletar evento",
+      "Tem certeza que deseja deletar esse evento?",
+      [
+        {
+          text: "Cancelar",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "Deletar",
+          onPress: async () => {
+            if (!event || !event._id) {
+              Alert.alert("Erro", "Não foi possível deletar o evento");
+              return;
+            }
+            deleteEvent(event?._id).then(() => {
+              Alert.alert("Sucesso", "Evento deletado");
+              navigation.goBack();
+            });
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   if (!event) return <View></View>;
 
   return (
@@ -103,7 +132,7 @@ export function EventDetailsScreen() {
                 </TouchableOpacity>
                 <TouchableOpacity
                   className="absolute top-36 right-4 bg-white rounded-full p-2 shadow"
-                  onPress={() => {}}
+                  onPress={confirmDelete}
                 >
                   <Icon.X strokeWidth={3} className="text-primary" />
                 </TouchableOpacity>
