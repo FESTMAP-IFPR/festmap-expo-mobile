@@ -11,7 +11,7 @@ const calculateDistance = (
     { latitude: lat2, longitude: lon2 }
   );
 
-  return distance;
+  return Number((distance / 1000).toFixed(1));
 };
 
 export default calculateDistance;

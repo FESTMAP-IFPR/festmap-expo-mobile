@@ -1,70 +1,36 @@
-import React from 'react';
-import { Marker, Callout } from 'react-native-maps';
-import { View, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { Marker } from "react-native-maps";
+import { EventData } from "../interfaces/interfaces";
+import { useNavigation } from "@react-navigation/core";
+import { MaterialIcons } from "@expo/vector-icons";
 
 interface CustomMarkerProps {
-    evento: {
-        latitude: number;
-        longitude: number;
-        imagem: string;
-        titulo: string;
-        inicio: string;
-        fim: string;
-        categoria: string;
-        contato: string;
-        descricao: string;
-        classificacao: string;
-    };
+  evento: EventData;
 }
 
-const CustomMarker = ({ evento }: CustomMarkerProps) => {
-    return (
-        <Marker 
-            coordinate={{ latitude: evento.latitude, longitude: evento.longitude }}
-            image={{uri: "https://picsum.photos/150"}}
-        >
-            <Callout style={styles.callout}>
-                <View style={styles.calloutContent}>
-                    <Text style={styles.title}>{evento.titulo}</Text>
-                    <Text style={styles.label}>Data de Início:</Text>
-                    <Text style={styles.text}>{evento.inicio}</Text>
-                    <Text style={styles.label}>Data de Fim:</Text>
-                    <Text style={styles.text}>{evento.fim}</Text>
-                    <Text style={styles.label}>Categoria:</Text>
-                    <Text style={styles.text}>{evento.categoria}</Text>
-                    <Text style={styles.label}>Contato:</Text>
-                    <Text style={styles.text}>{evento.contato}</Text>
-                    <Text style={styles.label}>Descrição:</Text>
-                    <Text style={styles.text}>{evento.descricao}</Text>
-                    <Text style={styles.label}>Classificação:</Text>
-                    <Text style={styles.text}>{evento.classificacao}</Text>
-                </View>
-            </Callout>
-        </Marker>
-    );
-};
+const CustomMarker = (props: CustomMarkerProps) => {
+  const { evento } = props;
+  if (!evento || !evento.localizacao?.coordinates) {
+    return null;
+  }
 
-const styles = StyleSheet.create({
-    callout: {
-        width: 250,
-    },
-    calloutContent: {
-        flex: 1,
-        marginLeft: 10,  
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 5,
-    },
-    label: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        marginTop: 5,
-    },
-    text: {
-        fontSize: 14,
-    },
-});
+  const navigation = useNavigation<any>();
+
+  const onPressMarker = () => {
+    navigation.navigate("EventDetailsScreen", { ...evento });
+  };
+
+  return (
+    <Marker
+      coordinate={{
+        latitude: evento.localizacao?.coordinates[1] ?? 0,
+        longitude: evento.localizacao?.coordinates[0] ?? 0,
+      }}
+      onPress={() => onPressMarker()}
+    >
+      <MaterialIcons name="location-pin" size={32} color="#8B5CF6" />
+    </Marker>
+  );
+};
 
 export default CustomMarker;

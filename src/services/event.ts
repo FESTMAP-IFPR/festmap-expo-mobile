@@ -6,7 +6,7 @@ import { Alert } from "react-native";
 export const createEvent = async (event: EventData) => {
   try {
     const requestBody = event;
-    console.log("Entro aqui");
+    console.log(event);
     const response = api
       .post<any>("/events", requestBody)
       .then((response) => {
@@ -42,8 +42,8 @@ export const getEventList = (): Promise<EventData[]> => {
 };
 
 export const getEventListByFilter = (
-  event_name: string,
-  address_name: string,
+  event_name: string | undefined | null,
+  address_name: string | undefined | null,
   user_id: string | undefined | null
 ): Promise<EventData[]> => {
   return new Promise((resolve) => {
@@ -57,7 +57,6 @@ export const getEventListByFilter = (
         },
       })
       .then((response) => {
-        console.log(response.data);
         resolve(response.data);
       })
       .catch((error) => {
@@ -68,7 +67,6 @@ export const getEventListByFilter = (
 };
 
 export const deleteEvent = async (id: string) => {
-  console.log("Entro aqui");
   const response = await api.delete("/events/" + id).catch(function (error) {
     return {
       status: error.response.status,

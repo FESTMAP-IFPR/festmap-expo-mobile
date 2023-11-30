@@ -6,9 +6,10 @@ import { Button, List, Text } from "react-native-paper";
 import { TextInput } from "react-native-paper";
 import { findAddressSearch } from "../../services/findAndressSugestiton";
 import { AddressData, LocationData } from "../../interfaces/interfaces";
-import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
 import { convertAddressText } from "../../utils/convertAddressText";
+import { debounce } from "lodash";
 
 export interface AndressLocationData {
   endereco?: AddressData;
@@ -21,7 +22,6 @@ export default function SelectLocationScreen() {
   const navigation = useNavigation<any>();
 
   const onChangeSuggestion = (text: any) => {
-    setSuggestionLocation(text);
     if (!text || text.length < 8) return;
     findAddressSearch(text).then((response) => {
       if (!response || !response.features) return;
@@ -32,6 +32,10 @@ export default function SelectLocationScreen() {
       setLocationList(locations);
     });
   };
+
+  const debounceOnChangeSuggestion = debounce((text) => {
+    onChangeSuggestion(text);
+  }, 500);
 
   const trasnformLocationSearchInLocationData = (location: {
     address?: string;
@@ -89,7 +93,10 @@ export default function SelectLocationScreen() {
           label="Buscar endereço e numero"
           placeholderTextColor={"#E5ECF4"}
           value={suggestionLocation}
-          onChangeText={(text) => onChangeSuggestion(text)}
+          onChangeText={(text) => {
+            setSuggestionLocation(text);
+            debounceOnChangeSuggestion(text);
+          }}
         />
         <ScrollView className="flex-1">
           <FlatList

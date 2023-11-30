@@ -1,5 +1,4 @@
 import { DrawerContent } from "../components/DrawerContent";
-import { HomeScreen } from "../screens/HomeScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
 import { useTheme } from "react-native-paper";
 import { AddEventScreen } from "../screens/AddEventScreen";
