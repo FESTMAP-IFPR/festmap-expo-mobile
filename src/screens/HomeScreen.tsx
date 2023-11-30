@@ -1,18 +1,19 @@
-import { StyleSheet, View} from "react-native";
+import { StyleSheet, View } from "react-native";
 import React, { useState, useEffect } from "react";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import CustomMarker from "../components/CustomMarker";
 
-
 export const HomeScreen = () => {
-  const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [location, setLocation] = useState<Location.LocationObject | null>(
+    null
+  );
   const [events, setEvents] = useState([
-    { 
-      id: 1, 
+    {
+      id: 1,
       localizacao: {
-        latitude: -25.4781, 
-        longitude: -54.5792
+        latitude: -25.4781,
+        longitude: -54.5792,
       },
       title: "Futebol 7",
       data_hora_inicio: "2021-10-10 10:00:00",
@@ -27,14 +28,14 @@ export const HomeScreen = () => {
         cidade: "Foz do Iguaçu",
         bairro: "Centro",
         rua: "Av. Brasil",
-        numero: 123
-      }
+        numero: 123,
+      },
     },
-    { 
-      id: 2, 
+    {
+      id: 2,
       localizacao: {
-        latitude: -25.4790, 
-        longitude: -54.5780
+        latitude: -25.479,
+        longitude: -54.578,
       },
       title: "Futebol 8",
       data_hora_inicio: "2021-10-10 10:00:00",
@@ -49,9 +50,9 @@ export const HomeScreen = () => {
         cidade: "Foz do Iguaçu",
         bairro: "Centro",
         rua: "Av. Brasil",
-        numero: 123
-      }
-    }
+        numero: 123,
+      },
+    },
   ]);
 
   type MapScreenProps = {
@@ -61,20 +62,21 @@ export const HomeScreen = () => {
   const MapScreen = ({ location }: MapScreenProps) => {
     const renderEventMarkers = () => {
       return events.map((event, index) => (
-        <CustomMarker 
-        key={index}
+        <CustomMarker
+          key={index}
           evento={{
-            latitude: event.localizacao.latitude, 
-            longitude: event.localizacao.longitude, 
-            imagem: "/home/rafhael/FESTMAP/festmap-expo-mobile/src/components/icon.png",
-            titulo: event.title, 
+            latitude: event.localizacao.latitude,
+            longitude: event.localizacao.longitude,
+            imagem:
+              "/home/rafhael/FESTMAP/festmap-expo-mobile/src/components/icon.png",
+            titulo: event.title,
             inicio: event.data_hora_inicio,
             fim: event.data_hora_fim,
             categoria: event.categoria,
             contato: event.contato,
             descricao: event.descricao,
             classificacao: event.classificacao,
-          }} 
+          }}
         />
       ));
     };
@@ -101,12 +103,10 @@ export const HomeScreen = () => {
               title="Sua Localização"
               pinColor="#8A44FF" // Define a cor roxa para o marcador da sua localização
             />
-            
           </MapView>
         ) : (
           <MapView style={styles.map} />
         )}
-        
       </View>
     );
   };

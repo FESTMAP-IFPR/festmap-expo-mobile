@@ -1,3 +1,5 @@
+import * as Location from "expo-location";
+
 export interface AuthContextData {
   signed: boolean;
   user: UserData | null;
@@ -15,7 +17,7 @@ export interface UserData {
   sexo: string;
   photo_uri: string;
   isAdmin: boolean;
-  senha: string;
+  senha?: string;
 }
 export interface AddressData {
   pais?: string;

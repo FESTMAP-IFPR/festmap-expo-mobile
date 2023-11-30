@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setLoading(false);
     }
     loadStorageData();
-  });
+  }, []);
 
   const signIn = async (email: string, password: string) => {
     const fazer_login = await login(email, password);
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         sexo: fazer_login.data.sexo,
         photo_uri: fazer_login.data.photo_uri,
         isAdmin: fazer_login.data.administrador,
-      }
+      },
     };
 
     const { token, user } = response;

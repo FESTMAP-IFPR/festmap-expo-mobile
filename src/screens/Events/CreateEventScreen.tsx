@@ -57,12 +57,8 @@ export default function CreateEventScreen(props: Props) {
           usuario_id: user._id,
         }));
       }
-    }, [route.params])
+    }, [route.params, user?._id])
   );
-
-  useEffect(() => {
-    console.log(eventData);
-  }, [eventData]);
 
   const updateEventDataByRouteParams = (
     endereco: AddressData | undefined,
@@ -151,6 +147,12 @@ export default function CreateEventScreen(props: Props) {
       return false;
     }
     return true;
+  };
+
+  const formateDate = (date: Date) => {
+    if (!date) return "";
+    const date_string = date.toString();
+    return date_string;
   };
 
   const selectImage = async () => {
@@ -269,8 +271,10 @@ export default function CreateEventScreen(props: Props) {
           </View>
           <View className="flex flex-row bg-white p-1 items-center justify-between rounded-md border">
             <Text className="text-base">
-              {eventData.data_hora_inicio?.toLocaleDateString()}-
-              {eventData.data_hora_fim?.toLocaleDateString()}
+              {eventData.data_hora_inicio &&
+                formateDate(eventData.data_hora_inicio)}
+              {eventData.data_hora_fim &&
+                " - " + formateDate(eventData.data_hora_fim)}
             </Text>
             <View className=" border-0 border-l-2 pl-2 border-l-gray-300">
               <TouchableOpacity

@@ -41,6 +41,32 @@ export const getEventList = (): Promise<EventData[]> => {
   });
 };
 
+export const getEventListByFilter = (
+  event_name: string,
+  address_name: string,
+  user_id: string | undefined | null
+): Promise<EventData[]> => {
+  return new Promise((resolve) => {
+    console.log("Entro aqui");
+    api
+      .get<EventData[]>("/events-find-by", {
+        params: {
+          event_name: event_name,
+          address_name: address_name,
+          user_id: user_id,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        resolve(response.data);
+      })
+      .catch((error) => {
+        Alert.alert(error);
+        throw error;
+      });
+  });
+};
+
 export const deleteEvent = async (id: string) => {
   console.log("Entro aqui");
   const response = await api.delete("/events/" + id).catch(function (error) {
