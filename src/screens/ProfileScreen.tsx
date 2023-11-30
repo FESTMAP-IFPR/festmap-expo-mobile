@@ -135,9 +135,12 @@ export const ProfileScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.profileContainer}>
-        {image ? (
+        {editedUser?.photo_uri != '' ? (
           <View>
-            <Image source={{ uri: image }} style={styles.profileImage} />
+            {image != null ? (
+              <Image source={{ uri: image }} style={styles.profileImage} />
+
+            ) : ('') }
             {isEditing && (
               <TouchableOpacity
                 style={styles.selectImageButton}
