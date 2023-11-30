@@ -88,7 +88,7 @@ export const ProfileScreen = () => {
     // console.log('Atualizando usuário:', editedUser.senha);
     const sanitizedUser: UserData = {
       _id: editedUser._id || "",
-      name: editedUser.name || "", // Se name for undefined, use uma string vazia
+      nome: editedUser.nome || "", // Se name for undefined, use uma string vazia
       email: editedUser.email || "", // Se email for undefined, use uma string vazia
       cpf: editedUser.cpf || "", // Se cpf for undefined, use uma string vazia
       data_de_nascimento: editedUser.data_de_nascimento || "", // Se data_de_nascimento for undefined, use uma nova data
@@ -99,7 +99,7 @@ export const ProfileScreen = () => {
     };
     // console.log(sanitizedUser.photo_uri)
     // atualizar a const user
-    user && (user.name = sanitizedUser.name);
+    user && (user.nome = sanitizedUser.nome);
     user && (user.email = sanitizedUser.email);
     user && (user.cpf = sanitizedUser.cpf);
     user && (user.data_de_nascimento = sanitizedUser.data_de_nascimento);
@@ -167,7 +167,7 @@ export const ProfileScreen = () => {
 
       <View style={styles.infoContainer}>
         {[
-          { label: "Nome", value: user?.name, key: "name" },
+          { label: "Nome", value: user?.nome, key: "name" },
           { label: "Email", value: user?.email, key: "email" },
           { label: "CPF", value: user?.cpf, key: "cpf" },
           {

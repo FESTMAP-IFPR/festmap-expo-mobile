@@ -53,7 +53,7 @@ export function EventItem(event: EventData) {
             <Text className=" text-gray-500 ">{event.categoria}</Text>
           </View>
           <View>
-            <Text className="p-1 bg-gray-500 rounded-full text-white text-xs">
+            <Text className="p-1 bg-green-500 border rounded-full text-white text-xs">
               1,8km
             </Text>
           </View>

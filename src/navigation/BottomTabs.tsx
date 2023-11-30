@@ -1,19 +1,19 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { ProfileScreen } from "../screens/ProfileScreen";
-import { HomeScreen } from "../screens/HomeScreen";
 // import Icon from "react-native-vector-icons/FontAwesome5";
 // import { Text} from "react-native";
-import { ManageEventsScreen } from "../screens/admin/EventManagement"
+import { ManageEventsScreen } from "../screens/admin/EventManagement";
 import { UserManagementScreen } from "../screens/admin/UserManagement";
 import { useAuth } from "../contexts/auth";
 import { useTheme, Avatar } from "react-native-paper";
 // import { EventsScreen } from "../screens/EventsScreen";
 import { EventsStackNavigator } from "./EventsStackNavigator";
-import { Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import HomeScreen from "../screens/HomeScreen";
+import { HomeStackNavigator } from "./HomeStackNavigator";
 
 const Tab = createBottomTabNavigator();
 const showBottonTabs = () => {
-
   const { signOut, user } = useAuth();
 
   const theme = useTheme();
@@ -46,7 +46,6 @@ const showBottonTabs = () => {
         name="Gerenciamento de Eventos"
         component={ManageEventsScreen}
         options={{
-
           tabBarIcon: ({ focused }) => (
             <>
               <Entypo name="calendar" size={40} color={"#151515"} />
@@ -78,7 +77,7 @@ const showBottonTabs = () => {
       initialRouteName="Minha localização"
     >
       <Tab.Screen
-        name="Eventos próximos"
+        name="EventsStack"
         component={EventsStackNavigator}
         options={{
           headerShown: false,
@@ -91,7 +90,7 @@ const showBottonTabs = () => {
       />
       <Tab.Screen
         name="Minha localização"
-        component={HomeScreen}
+        component={HomeStackNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <>

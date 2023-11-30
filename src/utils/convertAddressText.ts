@@ -1,7 +1,6 @@
 import { AddressData } from "../interfaces/interfaces";
 
 export const convertAddressText = (endereco: AddressData | undefined) => {
-  console.log(endereco);
   if (!endereco) {
     return "";
   }

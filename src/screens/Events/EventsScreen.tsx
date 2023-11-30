@@ -13,7 +13,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Animated } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Icon from "react-native-feather";
-import { getEventList, getEventListByFilter } from "../../services/event";
+import { getEventListByFilter } from "../../services/event";
 import { EventItem } from "../../components/EventItem";
 import { EventData } from "../../interfaces/interfaces";
 import { Button } from "react-native-paper";
@@ -35,21 +35,14 @@ export const EventsScreen = (props: any) => {
     navigation.navigate("CreateEventScreen");
   };
 
-  // useEffect(() => {
-  //   Alert.alert("useEffect");
-  //   navigation.addListener("focus", () => {
-  //     getEventList()
-  //       .then((data) => setEvents(data))
-  //       .catch((err) => Alert.alert(err))
-  //       .finally(() => {
-  //         console.log(events);
-  //       });
-  //     return;
-  //   });
-  // }, []);
+  useEffect(() => {
+    navigation.addListener("focus", () => {
+      fetchEvents();
+    });
+  }, []);
 
-  const [debouncedEventName, setDebouncedEventName] = useState<string>("");
-  const [debouncedAddressName, setDebouncedAddressName] = useState<string>("");
+  const [debouncedEventName, setDebouncedEventName] = useState<string>();
+  const [debouncedAddressName, setDebouncedAddressName] = useState<string>();
   const [debouncedOnlyMyEvents, setDebouncedOnlyMyEvents] =
     useState<boolean>(false);
 
@@ -66,12 +59,12 @@ export const EventsScreen = (props: any) => {
   }, [eventName, addressName, onlyMyEvents]);
 
   const handleDebounceEventName = (text: string | undefined) => {
-    if (!text || text == "" || text === debouncedEventName) return;
+    if (text === debouncedEventName) return;
     setDebouncedEventName(text);
   };
 
   const handleDebounceAddressName = (text: string | undefined) => {
-    if (!text || text == "" || text === debouncedAddressName) return;
+    if (text === debouncedAddressName) return;
     setDebouncedAddressName(text);
   };
 
@@ -81,30 +74,22 @@ export const EventsScreen = (props: any) => {
     setDebouncedOnlyMyEvents(value);
   };
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        let data;
-        if (
-          debouncedEventName ||
-          debouncedAddressName ||
-          debouncedOnlyMyEvents
-        ) {
-          data = await getEventListByFilter(
-            debouncedEventName,
-            debouncedAddressName,
-            debouncedOnlyMyEvents ? user?._id : null
-          );
-        } else {
-          data = await getEventList();
-        }
-        setEvents(data);
-        console.log(data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
+  const fetchEvents = async () => {
+    try {
+      let data;
+      data = await getEventListByFilter(
+        debouncedEventName,
+        debouncedAddressName,
+        debouncedOnlyMyEvents ? user?._id : null
+      );
+      setEvents(data);
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
+  useEffect(() => {
     fetchEvents();
   }, [debouncedEventName, debouncedAddressName, debouncedOnlyMyEvents]);
 

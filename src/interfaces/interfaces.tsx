@@ -10,7 +10,7 @@ export interface AuthContextData {
 
 export interface UserData {
   _id: string | null | undefined;
-  name: string;
+  nome: string;
   email: string;
   cpf: string;
   data_de_nascimento: string;
@@ -37,6 +37,7 @@ export interface LocationData {
 export interface EventData {
   _id?: string;
   usuario_id?: string | null | undefined;
+  criador?: UserData;
   nome?: string;
   descricao?: string;
   data_hora_inicio?: Date;

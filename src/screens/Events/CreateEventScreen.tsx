@@ -8,8 +8,6 @@ import {
 import { Button, TextInput } from "react-native-paper";
 import { DatePickerInput, DatePickerModal, ro } from "react-native-paper-dates";
 import * as Icon from "react-native-feather";
-import { Picker } from "@react-native-picker/picker";
-import { ScrollView } from "react-native-gesture-handler";
 import { useFocusEffect, useNavigation } from "@react-navigation/core";
 import { createEvent } from "../../services/event";
 import { Dropdown } from "react-native-element-dropdown";
@@ -45,20 +43,24 @@ export default function CreateEventScreen(props: Props) {
   const [openDatePicker, setOpenDatePicker] = useState(false);
 
   const { user } = useAuth();
+  console.log(user);
   useFocusEffect(
     React.useCallback(() => {
       if (route.params) {
         const { endereco, localizacao } = route.params;
         updateEventDataByRouteParams(endereco, localizacao);
       }
-      if (user && user?._id != null && user?._id != undefined) {
-        setEventData((prevEventData) => ({
-          ...prevEventData,
-          usuario_id: user._id,
-        }));
-      }
-    }, [route.params, user?._id])
+    }, [route.params])
   );
+
+  useEffect(() => {
+    if (user && user?._id != null && user?._id != undefined) {
+      setEventData((prevEventData) => ({
+        ...prevEventData,
+        usuario_id: user._id,
+      }));
+    }
+  }, [user]);
 
   const updateEventDataByRouteParams = (
     endereco: AddressData | undefined,
@@ -181,7 +183,7 @@ export default function CreateEventScreen(props: Props) {
 
   return (
     <SafeAreaView className="h-full">
-      <ScrollView contentContainerStyle={{ flex: 1 }} className="h-min-screen">
+      <View className="h-min-screen flex flex-1">
         <View className="mt-10 flex flex-col gap-2 px-2 bg-gray-100 justify-start ">
           <View>
             {image ? (
@@ -316,7 +318,7 @@ export default function CreateEventScreen(props: Props) {
           endDate={eventData.data_hora_fim}
           onConfirm={onConfirmDate}
         />
-      </ScrollView>
+      </View>
       <View
         style={{
           position: "absolute",
