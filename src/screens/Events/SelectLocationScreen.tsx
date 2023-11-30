@@ -28,7 +28,7 @@ export default function SelectLocationScreen() {
       const locations = response.features.map((location: any) => {
         return trasnformLocationSearchInLocationData(location);
       });
-      console.log(locations);
+
       setLocationList(locations);
     });
   };
@@ -41,7 +41,6 @@ export default function SelectLocationScreen() {
     properties: { housenumber: any };
     geometry: { coordinates: any };
   }) => {
-    console.log(location);
     return {
       endereco: {
         pais:
@@ -74,7 +73,6 @@ export default function SelectLocationScreen() {
   };
 
   const onSelectedAddress = (item: AndressLocationData) => {
-    console.log(item);
     // go to CreateEventScreen
     navigation.navigate("CreateEventScreen", {
       endereco: item.endereco,

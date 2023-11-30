@@ -8,7 +8,7 @@ export const createEvent = async (event: EventData) => {
     const requestBody = event;
     console.log("Entro aqui");
     const response = api
-      .post<any>("/event/create", requestBody)
+      .post<any>("/events", requestBody)
       .then((response) => {
         console.log(response.data);
         return response.data;
@@ -29,26 +29,47 @@ export const createEvent = async (event: EventData) => {
 export const getEventList = (): Promise<EventData[]> => {
   return new Promise((resolve) => {
     api
-      .get<EventData[]>("/event/find-all")
+      .get<EventData[]>("/events")
       .then((response) => {
         console.log(response.data);
         resolve(response.data);
       })
       .catch((error) => {
-        console.log(error);
-        console.log(error.response.data);
-        Alert.alert(error.response.data.message);
+        Alert.alert(error);
+        throw error;
+      });
+  });
+};
+
+export const getEventListByFilter = (
+  event_name: string,
+  address_name: string,
+  user_id: string | undefined | null
+): Promise<EventData[]> => {
+  return new Promise((resolve) => {
+    console.log("Entro aqui");
+    api
+      .get<EventData[]>("/events-find-by", {
+        params: {
+          event_name: event_name,
+          address_name: address_name,
+          user_id: user_id,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        resolve(response.data);
+      })
+      .catch((error) => {
+        Alert.alert(error);
         throw error;
       });
   });
 };
 
 export const deleteEvent = async (id: string) => {
-  const response = await api.post("event/delete", { id: id }, {
-    headers: {
-      "Content-Type": "application/json",
-    }
-  }).catch(function (error) {
+  console.log("Entro aqui");
+  const response = await api.delete("/events/" + id).catch(function (error) {
     return {
       status: error.response.status,
       data: error.response.data,
@@ -56,4 +77,4 @@ export const deleteEvent = async (id: string) => {
     };
   });
   return response;
-}
+};

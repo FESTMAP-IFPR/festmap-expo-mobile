@@ -15,10 +15,13 @@ import { createEvent } from "../../services/event";
 import { Dropdown } from "react-native-element-dropdown";
 import { useTheme } from "react-native-paper";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AndressLocationData } from "./SelectLocationScreen";
 import { EventsStackParamList } from "../../navigation/EventsStackNavigator";
 import { convertAddressText } from "../../utils/convertAddressText";
 import { MaterialIcons } from "@expo/vector-icons";
+import * as FileSystem from "expo-file-system";
+import * as ImagePicker from "expo-image-picker";
+import { Image } from "react-native";
+import { useAuth } from "../../contexts/auth";
 
 interface Props
   extends NativeStackScreenProps<EventsStackParamList, "CreateEventScreen"> {}
@@ -26,9 +29,11 @@ interface Props
 export default function CreateEventScreen(props: Props) {
   const { route, navigation } = props;
   const theme = useTheme();
+  const [image, setImage] = useState<string | null>(null);
 
   const [eventData, setEventData] = useState<EventData>({
     nome: "",
+    contato: "",
     descricao: "",
     data_hora_inicio: new Date(),
     data_hora_fim: new Date(),
@@ -39,18 +44,21 @@ export default function CreateEventScreen(props: Props) {
   });
   const [openDatePicker, setOpenDatePicker] = useState(false);
 
+  const { user } = useAuth();
   useFocusEffect(
     React.useCallback(() => {
       if (route.params) {
         const { endereco, localizacao } = route.params;
         updateEventDataByRouteParams(endereco, localizacao);
       }
-    }, [route.params])
+      if (user && user?._id != null && user?._id != undefined) {
+        setEventData((prevEventData) => ({
+          ...prevEventData,
+          usuario_id: user._id,
+        }));
+      }
+    }, [route.params, user?._id])
   );
-
-  useEffect(() => {
-    console.log(eventData);
-  }, [eventData]);
 
   const updateEventDataByRouteParams = (
     endereco: AddressData | undefined,
@@ -84,7 +92,7 @@ export default function CreateEventScreen(props: Props) {
     event.preventDefault();
     if (!isValidEventData()) return;
     createEvent(eventData);
-    backToEventsScreen();
+    // backToEventsScreen();
   };
 
   const isValidEventData = () => {
@@ -92,6 +100,11 @@ export default function CreateEventScreen(props: Props) {
       alert("Nome do evento não pode ser vazio");
       return false;
     }
+    if (eventData.contato == "") {
+      alert("Contato do evento não pode ser vazio");
+      return false;
+    }
+
     if (eventData.descricao == "") {
       alert("Descrição do evento não pode ser vazio");
       return false;
@@ -108,14 +121,87 @@ export default function CreateEventScreen(props: Props) {
       alert("Data de inicio do evento não pode ser vazio");
       return false;
     }
+    if (eventData.data_hora_fim == null) {
+      alert("Data de fim do evento não pode ser vazio");
+      return false;
+    }
+    if (eventData.localizacao == null) {
+      alert("Localização do evento não pode ser vazio");
+      return false;
+    }
+    if (eventData.endereco == null) {
+      alert("Endereço do evento não pode ser vazio");
+      return false;
+    }
+    if (
+      eventData.localizacao.coordinates == null ||
+      !eventData.localizacao.type ||
+      eventData.localizacao.coordinates[0] == null ||
+      eventData.localizacao.coordinates[1] == null
+    ) {
+      alert("Pontos de localização do evento não pode ser vazios");
+      return false;
+    }
+    if (eventData.imagem == null) {
+      alert("Imagem do evento não pode ser vazio");
+      return false;
+    }
     return true;
   };
 
+  const formateDate = (date: Date) => {
+    if (!date) return "";
+    const date_string = date.toString();
+    return date_string;
+  };
+
+  const selectImage = async () => {
+    var image_base64 = "";
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+      if (result.assets && result.assets.length > 0) {
+        image_base64 = await FileSystem.readAsStringAsync(
+          result.assets[0].uri,
+          { encoding: "base64" }
+        );
+      }
+      if (!result.canceled) {
+        setImage(result.assets[0].uri);
+        setEventData({ ...eventData, imagem: image_base64 });
+      }
+    } catch (error) {
+      console.error("Erro ao selecionar imagem:", error);
+    }
+  };
+
   return (
-    <SafeAreaView>
-      <ScrollView contentContainerStyle={{ flex: 1 }} className="h-full">
+    <SafeAreaView className="h-full">
+      <ScrollView contentContainerStyle={{ flex: 1 }} className="h-min-screen">
         <View className="mt-10 flex flex-col gap-2 px-2 bg-gray-100 justify-start ">
-          <Text> New event </Text>
+          <View>
+            {image ? (
+              <View className="flex flex-row justify-around">
+                <TouchableOpacity
+                  onPress={selectImage}
+                  className="flex justify-center items-center"
+                >
+                  <MaterialIcons name="photo-camera" size={40} color="#fff" />
+                </TouchableOpacity>
+                <Image source={{ uri: image }} className="w-32 h-20" />
+              </View>
+            ) : (
+              <View>
+                <TouchableOpacity onPress={selectImage}>
+                  <MaterialIcons name="photo-camera" size={40} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
           <TextInput
             mode="outlined"
             label={"Nome"}
@@ -123,6 +209,16 @@ export default function CreateEventScreen(props: Props) {
             // ...rest of the code
             value={eventData.nome}
             onChangeText={(text) => setEventData({ ...eventData, nome: text })}
+          />
+          <TextInput
+            mode="outlined"
+            label={"Contato"}
+            placeholderTextColor={"#E5ECF4"}
+            // ...rest of the code
+            value={eventData.contato}
+            onChangeText={(text) =>
+              setEventData({ ...eventData, contato: text })
+            }
           />
           <TextInput
             multiline={true}
@@ -173,30 +269,22 @@ export default function CreateEventScreen(props: Props) {
               }}
             />
           </View>
-          <View className="flex flex-row bg-white p-2 items-center justify-between rounded-md border">
-            <Text className="text-lg">
-              {eventData.data_hora_inicio?.toLocaleDateString()}-
-              {eventData.data_hora_fim?.toLocaleDateString()}
+          <View className="flex flex-row bg-white p-1 items-center justify-between rounded-md border">
+            <Text className="text-base">
+              {eventData.data_hora_inicio &&
+                formateDate(eventData.data_hora_inicio)}
+              {eventData.data_hora_fim &&
+                " - " + formateDate(eventData.data_hora_fim)}
             </Text>
-            <View className=" space-x-1 border-0 border-l-2 pl-2 border-l-gray-300">
+            <View className=" border-0 border-l-2 pl-2 border-l-gray-300">
               <TouchableOpacity
                 onPress={() => setOpenDatePicker(true)}
                 className="p-3 bg-gray-300 rounded-full"
               >
-                <Icon.Calendar height={25} width={25} stroke={"gray"} />
+                <Icon.Calendar height={20} width={20} stroke={"gray"} />
               </TouchableOpacity>
             </View>
           </View>
-          <Text className="text-lg">Localização</Text>
-          <View className="flex flex-row justify-start space-x-5 items-center border border-purple-400 m-2 p-4 rounded bg-white">
-            <MaterialIcons name="my-location" size={24} color="black" />
-            <View className="flex flex-col justify-start px-3">
-              <Text className="flex flex-wrap flex-shrink">
-                {convertAddressText(eventData?.endereco)}
-              </Text>
-            </View>
-          </View>
-          {/* // create a button to go other page to select location */}
           <Button
             mode="contained"
             className="rounded border-purple-500 "
@@ -204,26 +292,21 @@ export default function CreateEventScreen(props: Props) {
               navigation.navigate("SelectLocationScreen");
             }}
           >
-            Selecionar localização
+            <MaterialIcons name="map" size={24} color="black" />
           </Button>
-        </View>
-        <View
-          style={{
-            position: "absolute",
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
-          }}
-          className="self-end relative p-2 bottom-0 flex justify-end w-full bg-white -mt-12 pt-6"
-        >
-          <View className="px-5">
-            <TouchableOpacity
-              onPress={handleSubmit}
-              className="justify-center items-center p-2 shadow bg-purple-400 border rounded-md  border-purple-500 "
-            >
-              <Text>Criar</Text>
-            </TouchableOpacity>
+          <View className="flex flex-row items-stretch justify-between">
+            <View className="flex flex-grow flex-row justify-start items-center border border-purple-400 py-2 px-1 rounded bg-white">
+              <MaterialIcons name="my-location" size={24} color="black" />
+              <View className="flex flex-col justify-start px-3">
+                <Text className="flex flex-wrap flex-shrink">
+                  {convertAddressText(eventData?.endereco)}
+                </Text>
+              </View>
+            </View>
           </View>
+          {/* // create a button to go other page to select location */}
         </View>
+
         <DatePickerModal
           locale="pt-br"
           mode="range"
@@ -234,6 +317,33 @@ export default function CreateEventScreen(props: Props) {
           onConfirm={onConfirmDate}
         />
       </ScrollView>
+      <View
+        style={{
+          position: "absolute",
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
+        }}
+        className="self-end relative p-2 bottom-0 flex justify-end w-full bg-white -mt-12 pt-6"
+      >
+        <View className="px-2 flex justify-between flex-row gap-2">
+          <Button
+            mode="outlined"
+            className="rounded border-purple-500 "
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            mode="contained"
+            className="rounded border-purple-500 "
+            onPress={handleSubmit}
+          >
+            Criar
+          </Button>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
