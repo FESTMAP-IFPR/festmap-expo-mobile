@@ -66,9 +66,11 @@ export const ProfileScreen = () => {
           { encoding: "base64" }
         );
       }
-      if (!result.canceled) {
+      if (!result.canceled && image_base64 != '') {
         setImage(result.assets[0].uri);
         setEditedUser((prevUser) => ({ ...prevUser, photo_uri: image_base64 }));
+        editedUser.photo_uri = image_base64;
+        handleSave();
       }
     } catch (error) {
       console.error("Erro ao selecionar imagem:", error);
