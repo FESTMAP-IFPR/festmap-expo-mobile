@@ -1,5 +1,6 @@
 import { useTheme } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
+import * as Location from "expo-location";
 import {
   View,
   Text,
@@ -10,20 +11,21 @@ import {
   TextInput,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Animated } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Icon from "react-native-feather";
 import { getEventListByFilter } from "../../services/event";
 import { EventItem } from "../../components/EventItem";
 import { EventData } from "../../interfaces/interfaces";
-import { Button } from "react-native-paper";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { useAuth } from "../../contexts/auth";
 import { Switch } from "react-native-paper";
+import calculateDistance from "../../utils/calculateDistance";
 
 export const EventsScreen = (props: any) => {
   const theme = useTheme();
   const { user } = useAuth();
+  const [location, setLocation] = useState<Location.LocationObject | null>(
+    null
+  );
 
   const [eventName, setEventName] = useState<string>();
   const [addressName, setAddressName] = useState<string>();
@@ -35,7 +37,45 @@ export const EventsScreen = (props: any) => {
     navigation.navigate("CreateEventScreen");
   };
 
+  const getCurrentLocation = async () => {
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    } catch (error) {
+      console.log("Error getting current location:", error);
+    }
+  };
+
+  const calculateDistanceBetweenEventAndCurrentLocation = (
+    event: EventData
+  ) => {
+    if (
+      !location ||
+      !event ||
+      !event.localizacao ||
+      !event.localizacao.coordinates ||
+      !event.localizacao.coordinates[0] ||
+      !event.localizacao.coordinates[1]
+    )
+      return undefined;
+
+    let resultDistance = calculateDistance(
+      location.coords.latitude,
+      location.coords.longitude,
+      event.localizacao.coordinates[1],
+      event.localizacao.coordinates[0]
+    );
+
+    return resultDistance;
+  };
+
   useEffect(() => {
+    getCurrentLocation();
     navigation.addListener("focus", () => {
       fetchEvents();
     });
@@ -70,20 +110,36 @@ export const EventsScreen = (props: any) => {
 
   const handleDebounceOnlyMyEvents = (value: boolean) => {
     if (value === debouncedOnlyMyEvents) return;
-    console.log("Entrou aquiii");
     setDebouncedOnlyMyEvents(value);
+  };
+
+  const handleEvents = (events: EventData[]) => {
+    return events
+      ?.filter((event) => {
+        return (
+          event &&
+          event.localizacao &&
+          event.localizacao.coordinates &&
+          event.localizacao.coordinates.length > 0
+        );
+      })
+      .map((event) => {
+        return {
+          ...event,
+          distancia: calculateDistanceBetweenEventAndCurrentLocation(event),
+        };
+      });
   };
 
   const fetchEvents = async () => {
     try {
-      let data;
+      let data: EventData[];
       data = await getEventListByFilter(
         debouncedEventName,
         debouncedAddressName,
         debouncedOnlyMyEvents ? user?._id : null
       );
-      setEvents(data);
-      console.log(data);
+      setEvents(handleEvents(data));
     } catch (err) {
       console.log(err);
     }
@@ -94,7 +150,7 @@ export const EventsScreen = (props: any) => {
   }, [debouncedEventName, debouncedAddressName, debouncedOnlyMyEvents]);
 
   return (
-    <SafeAreaView className="bg-purple-50 ">
+    <SafeAreaView className="bg-purple-50  h-[600px]">
       {/* search Bar */}
       <View className="flex-row items-center justify-between space-x-2 m-2 p-2">
         <View>
@@ -165,16 +221,17 @@ export const EventsScreen = (props: any) => {
           {/* <Categories/> */}
         </ScrollView>
       </View>
-      <View className=" min-h-screen bg-purple-200">
-        {/* events */}
-        <FlatList
-          className=" h-full"
-          data={events}
-          renderItem={({ item }) => {
-            return <EventItem {...item} />;
-          }}
-        ></FlatList>
-      </View>
+      {/* events */}
+      <FlatList
+        className="flex flex-grow"
+        contentContainerStyle={{
+          flexGrow: 1,
+        }}
+        data={events}
+        renderItem={({ item }) => {
+          return <EventItem {...item} />;
+        }}
+      ></FlatList>
     </SafeAreaView>
   );
 };

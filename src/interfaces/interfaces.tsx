@@ -48,4 +48,5 @@ export interface EventData {
   imagem?: string;
   localizacao?: LocationData;
   endereco?: AddressData;
+  distancia?: number;
 }

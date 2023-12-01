@@ -14,6 +14,7 @@ import { convertAddressText } from "../../utils/convertAddressText";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { set } from "lodash";
 import { useAuth } from "../../contexts/auth";
+import { format, parseISO } from "date-fns";
 
 export function EventDetailsScreen() {
   const [event, setEvent] = useState<EventData | null>(null);
@@ -124,6 +125,16 @@ export function EventDetailsScreen() {
     );
   };
 
+  function isValidDate(date: any) {
+    return !date || !isNaN(new Date(date).getTime());
+  }
+
+  const formatDate = (date: Date) => {
+    if (!isValidDate(date)) return;
+    const date_string = parseISO(date.toString());
+    return format(date_string, "dd/MM/yyyy HH:mm ");
+  };
+
   if (!event) return <View></View>;
 
   return (
@@ -198,11 +209,9 @@ export function EventDetailsScreen() {
             <View className="border rounded-lg border-slate-300 p-2  flex  flex-row items-center gap-2">
               <AntDesign name="clockcircleo" size={32} color={"#8B5CF6"} />
               <View className="flex flex-start border-0 border-l-2 pl-2 border-l-gray-300">
-                <Text className="text-gray-500 text-lg text-left">
-                  <Text className="font-bold">Inicio</Text> : 11-12-23 13:00
-                </Text>
-                <Text className="text-gray-500 text-lg text-left">
-                  <Text className="font-bold">Fim</Text> : 11-12-23 13:00
+                <Text className=" text-gray-500 ">
+                  {event.data_hora_inicio && formatDate(event.data_hora_inicio)}{" "}
+                  - {event.data_hora_fim && formatDate(event.data_hora_fim)}
                 </Text>
               </View>
             </View>

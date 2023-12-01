@@ -8,6 +8,10 @@ import { parseISO } from "date-fns";
 export function EventItem(event: EventData) {
   const navigation = useNavigation<any>();
 
+  useEffect(() => {
+    console.log(event?.distancia);
+  }, [event]);
+
   const goToEventDetails = (): void => {
     navigation.navigate("EventDetailsScreen", { ...event });
   };
@@ -52,11 +56,16 @@ export function EventItem(event: EventData) {
             {/* <Text className=" text-gray-500 ">{item.data_hora_inicio?.toLocaleDateString()} - {item.data_hora_fim?.toLocaleDateString()} </Text> */}
             <Text className=" text-gray-500 ">{event.categoria}</Text>
           </View>
-          <View>
-            <Text className="p-1 bg-green-500 border rounded-full text-white text-xs">
-              1,8km
-            </Text>
-          </View>
+
+          {event.distancia && (
+            <View>
+              <View className="text-center bg-green-500  px-2 border border-green-600 rounded-full">
+                <Text className=" rounded-full text-white text-xs">
+                  {`${event.distancia} km`}
+                </Text>
+              </View>
+            </View>
+          )}
         </View>
       </TouchableOpacity>
     </View>
