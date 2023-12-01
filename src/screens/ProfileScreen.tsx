@@ -7,6 +7,8 @@ import {
   StyleSheet,
   SafeAreaView,
   TextInput,
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
 import { Button, useTheme } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
@@ -117,6 +119,10 @@ export const ProfileScreen = () => {
     setShowDatePicker(true);
   };
 
+  const ocultarSenha = () => {
+    return "********";
+  };
+
   const onChange = (event: any, selectedDate: any) => {
     setShowDatePicker(false);
 
@@ -134,103 +140,179 @@ export const ProfileScreen = () => {
     }
   };
 
+  const splitName = (name: string | undefined) => {
+    if (!name) {
+      return { firstName: "", lastName: "" };
+    }
+
+    const parts = name.split(" ");
+    const firstName = parts[0];
+    const lastName = parts.slice(1).join(" ");
+
+    return { firstName, lastName };
+  };
+
+  const { firstName, lastName } = splitName(editedUser.name);
+
   return (
+
     <SafeAreaView style={styles.container}>
-      <View style={styles.profileContainer}>
-        {editedUser?.photo_uri != '' ? (
-          <View>
-            {image != null ? (
-              <Image source={{ uri: image }} style={styles.profileImage} />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.keyboardAvoidingView}
+      >
+        <View style={styles.darkBackground}>
 
-            ) : ('') }
-            {isEditing && (
-              <TouchableOpacity
-                style={styles.selectImageButton}
-                onPress={selectImage}
-              >
-                <MaterialIcons name="photo-camera" size={40} color="#fff" />
-              </TouchableOpacity>
-            )}
-          </View>
-        ) : (
-          <View style={styles.placeholder}>
-            <MaterialIcons name="person" size={100} color="#fff" />
-            <TouchableOpacity
-              style={styles.selectImageButton}
-              onPress={selectImage}
-            >
-              <MaterialIcons name="photo-camera" size={40} color="#fff" />
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
+          {/* profile pic */}
+          <View style={styles.profileContainer}>
+            {editedUser?.photo_uri != '' ? (
+              <View>
+                {image != null ? (
+                  <Image source={{ uri: image }} style={styles.profileImage} />
 
-      <View style={styles.infoContainer}>
-        {[
-          { label: "Nome", value: user?.nome, key: "name" },
-          { label: "Email", value: user?.email, key: "email" },
-          { label: "CPF", value: user?.cpf, key: "cpf" },
-          {
-            label: "Data de nascimento",
-            value: date,
-            key: "data_de_nascimento",
-          },
-          { label: "Senha", value: "********", key: "senha" },
-        ].map(({ label, value, key }, index) => (
-          <View style={styles.infoItem} key={index}>
-            <Text style={styles.infoLabel}>{label}:</Text>
-            {isEditing ? (
-              key === "data_de_nascimento" ? (
-                <Button
-                  mode="contained"
-                  onPress={showDatePickerModal}
-                  style={{
-                    backgroundColor: theme.colors.primary,
-                    borderRadius: 50,
-                    justifyContent: "space-between",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: 10,
-                  }}
-                >
-                  <Text style={{}}>
-                    {" "}
-                    {date ? formatarData(date) + "  " : date}
-                  </Text>
-                  <MaterialIcons name="date-range" size={15} color="#fff" />
-                </Button>
-              ) : (
-                <TextInput
-                  style={styles.editableInfoValue}
-                  value={editedUser[key] || ""}
-                  onChangeText={(text) => {
-                    // console.log(`Changing ${key} to: ${text}`);
-                    setEditedUser((prevUser) => ({
-                      ...prevUser,
-                      [key]: text,
-                    }));
-                  }}
-                />
-              )
+                ) : ('')}
+                {isEditing && (
+                  <TouchableOpacity
+                    style={styles.selectImageButton}
+                    onPress={selectImage}
+                  >
+                    <MaterialIcons name="photo-camera" size={40} color="#fff" />
+                  </TouchableOpacity>
+                )}
+              </View>
             ) : (
-              <Text style={styles.infoValue}>
-                {key === "data_de_nascimento"
-                  ? formatarData(value || "")
-                  : value || ""}
-              </Text>
+              <View style={styles.placeholder}>
+                <MaterialIcons name="person" size={100} color="#fff" />
+                <TouchableOpacity
+                  style={styles.selectImageButton}
+                  onPress={selectImage}
+                >
+                  <MaterialIcons name="photo-camera" size={40} color="#fff" />
+                </TouchableOpacity>
+              </View>
             )}
           </View>
-        ))}
 
-        {showDatePicker && isEditing && (
-          <DateTimePicker
-            locale="pt-BR"
-            value={new Date(date)}
-            mode="date"
-            onChange={onChange}
-          />
-        )}
+          {/* Nome */}
+          {isEditing ? (
+            <View style={styles.username}>
+              <Text style={styles.infoLabel}>Nome:</Text>
+              <TextInput
+                style={styles.editableInfoValue}
+                value={editedUser.name || ""}
+                onChangeText={(text) => {
+                  setEditedUser((prevUser) => ({
+                    ...prevUser,
+                    name: text,
+                  }));
+                }}
+              />
+            </View>
+          ) : (
+            <View style={{ flexDirection: "row", alignSelf: 'center', marginBottom: 10 }}>
+              <Text style={{ fontSize: 30, color: 'white' }}>{firstName}</Text>
+              <Text style={{ fontSize: 30, fontWeight: "bold", color: 'white' }}>{" " + lastName}</Text>
+            </View>
+          )}
 
+          {/* email */}
+          {isEditing ? (
+            <View style={styles.email}>
+              <Text style={styles.infoLabel}>Email:</Text>
+              <TextInput
+                style={styles.editableInfoValue}
+                value={editedUser.email || ""}
+                onChangeText={(text) => {
+                  setEditedUser((prevUser) => ({
+                    ...prevUser,
+                    email: text,
+                  }));
+                }}
+              />
+              
+            </View>
+          ) : (
+            <View style={styles.information}>
+              <Text style={{ fontSize: 13, color: 'white', textAlign: 'center' }}>{user?.email} | {formatarData(user?.data_de_nascimento || "")}</Text>
+              <Text style={{ fontSize: 13, color: 'white', marginTop: 10, textAlign: 'center' }}>CPF: {user?.cpf}</Text>
+              <Text style={{ fontSize: 13, color: 'white', marginTop: 10, textAlign: 'center' }}>Sexo: {user?.sexo}</Text>
+            </View>
+
+          )}
+           {/* Password */}
+           {isEditing ? (
+            <View style={styles.password}>
+              <Text style={styles.infoLabel}>Senha:</Text>
+              <TextInput
+                style={styles.editableInfoValue}
+                placeholder={'******'}
+                onChangeText={(text) => {
+                  setEditedUser((prevUser) => ({
+                    ...prevUser,
+                    senha: text,
+                  }));
+                }}
+              />
+            </View>
+          )
+            : ('')
+          }
+          {/* cpf */}
+          {isEditing ? (
+            <View style={styles.cpf}>
+              <Text style={styles.infoLabel}>CPF:</Text>
+              <TextInput
+                style={styles.editableInfoValue}
+                value={editedUser.cpf || ""}
+                onChangeText={(text) => {
+                  setEditedUser((prevUser) => ({
+                    ...prevUser,
+                    cpf: text,
+                  }));
+                }}
+              />
+            </View>
+          ) : (
+            ''
+          )}
+
+         
+
+          {/* Data de Nascimento  */}
+          {isEditing ? (
+            <View style={styles.birthdate}>
+              <Text style={styles.infoLabel}>Data de nascimento:</Text>
+              <Button
+                mode="contained"
+                onPress={showDatePickerModal}
+                style={{
+                  backgroundColor: theme.colors.primary,
+                  borderRadius: 50,
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: 10,
+                }}
+              >
+                <Text style={{}}>
+                  {" "}
+                  {date ? formatarData(date) + "  " : date}
+                </Text>
+                <MaterialIcons name="date-range" size={15} color="#fff" />
+              </Button>
+            </View>
+          ) : (
+            ''
+          )}
+          {showDatePicker && isEditing && (
+            <DateTimePicker
+              locale="pt-BR"
+              value={new Date(date)}
+              mode="date"
+              onChange={onChange}
+            />
+          )}
+        </View>
         <View style={styles.buttonContainer}>
           {isEditing ? (
             <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
@@ -248,7 +330,8 @@ export const ProfileScreen = () => {
             <MaterialIcons name="exit-to-app" size={20} color="#fff" />
           </TouchableOpacity>
         </View>
-      </View>
+
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -258,7 +341,6 @@ const makeStyles = (theme: any) =>
     container: {
       flex: 1,
       backgroundColor: "#c3bef7",
-      padding: 20,
     },
     profileContainer: {
       alignItems: "center",
@@ -272,6 +354,9 @@ const makeStyles = (theme: any) =>
       resizeMode: "cover",
       borderRadius: 100,
     },
+    information: {
+      marginBottom: 150,
+    },
     placeholder: {
       width: 200,
       height: 200,
@@ -280,6 +365,22 @@ const makeStyles = (theme: any) =>
       justifyContent: "center",
       alignItems: "center",
       position: "relative",
+    },
+    cpf: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 15,
+    },
+    password: {
+      flexDirection: 'row',
+      alignItems: "center",
+      width: '50%'
+    },
+    darkBackground: {
+      borderBottomLeftRadius: 25,
+      borderBottomRightRadius: 25,
+      padding: 10,
+      backgroundColor: "black",  // Ajuste as cores conforme necessário
     },
     selectImageButton: {
       position: "absolute",
@@ -307,6 +408,21 @@ const makeStyles = (theme: any) =>
     infoContainer: {
       marginTop: 15,
     },
+    username: {
+      alignItems: "center",
+      flexDirection: 'row'
+    },
+    email: {
+      flexDirection: "row",
+      alignItems: "center",
+
+    },
+    birthdate: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 90
+
+    },
     infoItem: {
       flexDirection: "row",
       justifyContent: "space-between",
@@ -314,7 +430,7 @@ const makeStyles = (theme: any) =>
       marginBottom: 15,
     },
     infoLabel: {
-      color: "#000000",
+      color: "white",
       marginRight: 10,
       fontWeight: "bold",
     },
@@ -329,11 +445,14 @@ const makeStyles = (theme: any) =>
     buttonContainer: {
       flexDirection: "row",
       justifyContent: "space-between",
+      marginHorizontal: "5%",
+      marginBottom: "10%",
       marginTop: "20%",
     },
     editableInfoValue: {
       color: "#FFFF",
       backgroundColor: theme.colors.primary,
+      marginTop: 5,
       padding: 4,
       paddingHorizontal: 15,
       borderRadius: 50,
@@ -347,5 +466,8 @@ const makeStyles = (theme: any) =>
       alignItems: "center",
       justifyContent: "center",
       marginBottom: 10,
+    },
+    keyboardAvoidingView: {
+      flex: 1,
     },
   });
