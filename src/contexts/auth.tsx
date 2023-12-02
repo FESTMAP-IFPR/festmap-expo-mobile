@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       token: "123",
       user: {
         _id: fazer_login.data._id,
-        name: fazer_login.data.nome,
+        nome: fazer_login.data.nome,
         email: fazer_login.data.email,
         cpf: fazer_login.data.cpf,
         data_de_nascimento: fazer_login.data.data_de_nascimento,

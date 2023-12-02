@@ -12,7 +12,6 @@ import { deleteEvent } from "../../services/event";
 import { findUserById } from "../../services/user";
 import { convertAddressText } from "../../utils/convertAddressText";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { set } from "lodash";
 import { useAuth } from "../../contexts/auth";
 import { format, parseISO } from "date-fns";
 

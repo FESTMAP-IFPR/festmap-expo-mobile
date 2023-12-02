@@ -152,7 +152,7 @@ export const ProfileScreen = () => {
     return { firstName, lastName };
   };
 
-  const { firstName, lastName } = splitName(editedUser.name);
+  const { firstName, lastName } = splitName(editedUser.nome);
 
   return (
 
@@ -199,11 +199,11 @@ export const ProfileScreen = () => {
               <Text style={styles.infoLabel}>Nome:</Text>
               <TextInput
                 style={styles.editableInfoValue}
-                value={editedUser.name || ""}
+                value={editedUser.nome || ""}
                 onChangeText={(text) => {
                   setEditedUser((prevUser) => ({
                     ...prevUser,
-                    name: text,
+                    nome: text,
                   }));
                 }}
               />

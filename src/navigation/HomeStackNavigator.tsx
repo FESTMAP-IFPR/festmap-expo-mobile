@@ -1,6 +1,6 @@
 import { useTheme } from "react-native-paper";
 import { createStackNavigator } from "@react-navigation/stack";
-import { EventDetailsScreen } from "../screens/events/EventDetailsScreen";
+import { EventDetailsScreen } from "../screens/Events/EventDetailsScreen";
 
 import HomeScreen from "../screens/HomeScreen";
 
