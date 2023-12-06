@@ -72,7 +72,6 @@ export const ProfileScreen = () => {
         setImage(result.assets[0].uri);
         setEditedUser((prevUser) => ({ ...prevUser, photo_uri: image_base64 }));
         editedUser.photo_uri = image_base64;
-        handleSave();
       }
     } catch (error) {
       console.error("Erro ao selecionar imagem:", error);
@@ -138,6 +137,34 @@ export const ProfileScreen = () => {
 
       // console.log(editedUser)
     }
+  };
+
+  const formatCpf = (value: string) => {
+    // Remove caracteres não numéricos
+    const numericValue = value.replace(/\D/g, '');
+  
+    // Adiciona os pontos e o traço na formatação do CPF
+    if (numericValue.length >= 3) {
+      return (
+        numericValue.slice(0, 3) +
+        '.' +
+        numericValue.slice(3, 6) +
+        '.' +
+        numericValue.slice(6, 9) +
+        '-' +
+        numericValue.slice(9, 11)
+      );
+    } else {
+      return numericValue;
+    }
+  };
+
+  const handleCancel = () => {
+    // Resetar o estado editedUser para o estado original do usuário
+    setEditedUser({ ...user });
+    setIsEditing(false);
+    // Também é possível resetar a imagem se ela foi alterada durante a edição
+    setImage(convertBase64ToImage(user?.photo_uri!) || null);
   };
 
   const splitName = (name: string | undefined) => {
@@ -245,7 +272,7 @@ export const ProfileScreen = () => {
               <Text style={styles.infoLabel}>Senha:</Text>
               <TextInput
                 style={styles.editableInfoValue}
-                placeholder={'******'}
+                placeholder={'Insira uma nova senha'}
                 onChangeText={(text) => {
                   setEditedUser((prevUser) => ({
                     ...prevUser,
@@ -260,10 +287,10 @@ export const ProfileScreen = () => {
           {/* cpf */}
           {isEditing ? (
             <View style={styles.cpf}>
-              <Text style={styles.infoLabel}>CPF:</Text>
+              <Text style={styles.cpfInfoLabel}>CPF:</Text>
               <TextInput
                 style={styles.editableInfoValue}
-                value={editedUser.cpf || ""}
+                value={formatCpf(editedUser.cpf || "")}
                 onChangeText={(text) => {
                   setEditedUser((prevUser) => ({
                     ...prevUser,
@@ -315,10 +342,16 @@ export const ProfileScreen = () => {
         </View>
         <View style={styles.buttonContainer}>
           {isEditing ? (
-            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-              <Text style={styles.buttonText}>Salvar</Text>
-              <MaterialIcons name="check" size={20} color="#fff" />
-            </TouchableOpacity>
+             <>
+             <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+               <Text style={styles.buttonText}>Salvar</Text>
+               <MaterialIcons name="check" size={20} color="#fff" />
+             </TouchableOpacity>
+             <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+               <Text style={styles.buttonText}>Cancelar</Text>
+               <MaterialIcons name="cancel" size={20} color="#fff" />
+             </TouchableOpacity>
+           </>
           ) : (
             <TouchableOpacity style={styles.uploadButton} onPress={handleEdit}>
               <Text style={styles.buttonText}>Editar meus dados</Text>
@@ -366,6 +399,18 @@ const makeStyles = (theme: any) =>
       alignItems: "center",
       position: "relative",
     },
+    cancelButton: {
+      backgroundColor: "red",  // Cor de fundo do botão de cancelar
+      borderRadius: 50,
+      padding: 10,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: 10,
+    },
+    cpfInfoLabel: {
+      marginRight: 25,
+    },
     cpf: {
       flexDirection: "row",
       alignItems: "center",
@@ -374,7 +419,6 @@ const makeStyles = (theme: any) =>
     password: {
       flexDirection: 'row',
       alignItems: "center",
-      width: '50%'
     },
     darkBackground: {
       borderBottomLeftRadius: 25,
@@ -419,9 +463,9 @@ const makeStyles = (theme: any) =>
     },
     birthdate: {
       flexDirection: "row",
-      alignItems: "center",
-      marginBottom: 90
-
+      marginBottom: 30,
+      marginTop: 30,
+      alignItems: 'baseline'
     },
     infoItem: {
       flexDirection: "row",
