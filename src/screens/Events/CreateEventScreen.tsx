@@ -22,7 +22,7 @@ import { Image } from "react-native";
 import { useAuth } from "../../contexts/auth";
 
 interface Props
-  extends NativeStackScreenProps<EventsStackParamList, "CreateEventScreen"> {}
+  extends NativeStackScreenProps<EventsStackParamList, "CreateEventScreen"> { }
 
 export default function CreateEventScreen(props: Props) {
   const { route, navigation } = props;
@@ -241,9 +241,14 @@ export default function CreateEventScreen(props: Props) {
               value={eventData.categoria}
               placeholder="Selecione categoria"
               data={[
-                { value: "musica", label: "Musica" },
-                { value: "esporte", label: "Esporte" },
-                { value: "comida", label: "Comida" },
+                { value: "cultural", label: "Cultural" },
+                { value: "esportivo", label: "Esportivo" },
+                { value: "educacional", label: "Educacional" },
+                { value: "entretenimento", label: "Entretenimento" },
+                { value: "gastronomia", label: "Gastronomia" },
+                { value: "tecnologico", label: "Tecnológico" },
+                { value: "moda", label: "Moda" },
+                { value: "outros", label: "Outros" },
               ]}
               valueField={"value"}
               labelField={"label"}
