@@ -20,9 +20,10 @@ import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import { Image } from "react-native";
 import { useAuth } from "../../contexts/auth";
+import { ScrollView } from "react-native-gesture-handler";
 
 interface Props
-  extends NativeStackScreenProps<EventsStackParamList, "CreateEventScreen"> { }
+  extends NativeStackScreenProps<EventsStackParamList, "CreateEventScreen"> {}
 
 export default function CreateEventScreen(props: Props) {
   const { route, navigation } = props;
@@ -94,7 +95,7 @@ export default function CreateEventScreen(props: Props) {
     event.preventDefault();
     if (!isValidEventData()) return;
     createEvent(eventData);
-    // backToEventsScreen();
+    backToEventsScreen();
   };
 
   const isValidEventData = () => {
@@ -182,147 +183,151 @@ export default function CreateEventScreen(props: Props) {
   };
 
   return (
-    <SafeAreaView className="h-full">
+    <SafeAreaView className="h-full flex ">
       <View className="h-min-screen flex flex-1">
-        <View className="mt-10 flex flex-col gap-2 px-2 bg-gray-100 justify-start ">
-          <View>
-            {image ? (
-              <View className="flex flex-row justify-around">
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="flex">
+          <View className="mt-10 flex flex-col gap-2 px-2 bg-gray-100 justify-start h-[600px]">
+            <View>
+              {image ? (
+                <View className="flex flex-row justify-around">
+                  <TouchableOpacity
+                    onPress={selectImage}
+                    className="flex justify-center items-center"
+                  >
+                    <MaterialIcons name="photo-camera" size={40} color="#fff" />
+                  </TouchableOpacity>
+                  <Image source={{ uri: image }} className="w-32 h-20" />
+                </View>
+              ) : (
+                <View>
+                  <TouchableOpacity onPress={selectImage}>
+                    <MaterialIcons name="photo-camera" size={40} color="#fff" />
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+            <TextInput
+              mode="outlined"
+              label={"Nome"}
+              placeholderTextColor={"#E5ECF4"}
+              // ...rest of the code
+              value={eventData.nome}
+              onChangeText={(text) =>
+                setEventData({ ...eventData, nome: text })
+              }
+            />
+            <TextInput
+              mode="outlined"
+              label={"Contato"}
+              placeholderTextColor={"#E5ECF4"}
+              // ...rest of the code
+              value={eventData.contato}
+              onChangeText={(text) =>
+                setEventData({ ...eventData, contato: text })
+              }
+            />
+            <TextInput
+              multiline={true}
+              numberOfLines={4}
+              label={"Descrição"}
+              // style={styles.descriptionInput}
+              placeholderTextColor={"#E5ECF4"}
+              mode="outlined"
+              dense={true}
+              placeholder="Description"
+              value={eventData.descricao}
+              onChangeText={(text) =>
+                setEventData({ ...eventData, descricao: text })
+              }
+            />
+            <View className="bg-white rounded-md border ">
+              <Dropdown
+                value={eventData.categoria}
+                placeholder="Selecione categoria"
+                data={[
+                  { value: "cultural", label: "Cultural" },
+                  { value: "esportivo", label: "Esportivo" },
+                  { value: "educacional", label: "Educacional" },
+                  { value: "entretenimento", label: "Entretenimento" },
+                  { value: "gastronomia", label: "Gastronomia" },
+                  { value: "tecnologico", label: "Tecnológico" },
+                  { value: "moda", label: "Moda" },
+                  { value: "outros", label: "Outros" },
+                ]}
+                valueField={"value"}
+                labelField={"label"}
+                onChange={(value: any) => {
+                  setEventData({ ...eventData, categoria: value.value });
+                }}
+              />
+            </View>
+            <View className="bg-white rounded-md border ">
+              <Dropdown
+                value={eventData.classificacao}
+                placeholder="Selecione classificação"
+                data={[
+                  { value: "livre", label: "Livre" },
+                  { value: "10", label: "10" },
+                  { value: "12", label: "12" },
+                  { value: "14", label: "14" },
+                  { value: "16", label: "16" },
+                  { value: "18", label: "18" },
+                ]}
+                valueField={"value"}
+                labelField={"label"}
+                onChange={(value: any) => {
+                  setEventData({ ...eventData, classificacao: value.value });
+                }}
+              />
+            </View>
+            <View className="flex flex-row bg-white items-center justify-between rounded-md border">
+              <Text className="text-base">
+                {eventData.data_hora_inicio &&
+                  formateDate(eventData.data_hora_inicio)}
+                {eventData.data_hora_fim &&
+                  " - " + formateDate(eventData.data_hora_fim)}
+              </Text>
+              <View className=" border-0 border-l-2 pl-2 border-l-gray-300 ">
                 <TouchableOpacity
-                  onPress={selectImage}
-                  className="flex justify-center items-center"
+                  onPress={() => setOpenDatePicker(true)}
+                  className="p-3 bg-gray-300 rounded-full"
                 >
-                  <MaterialIcons name="photo-camera" size={40} color="#fff" />
-                </TouchableOpacity>
-                <Image source={{ uri: image }} className="w-32 h-20" />
-              </View>
-            ) : (
-              <View>
-                <TouchableOpacity onPress={selectImage}>
-                  <MaterialIcons name="photo-camera" size={40} color="#fff" />
+                  <Icon.Calendar height={20} width={20} stroke={"gray"} />
                 </TouchableOpacity>
               </View>
-            )}
-          </View>
-          <TextInput
-            mode="outlined"
-            label={"Nome"}
-            placeholderTextColor={"#E5ECF4"}
-            // ...rest of the code
-            value={eventData.nome}
-            onChangeText={(text) => setEventData({ ...eventData, nome: text })}
-          />
-          <TextInput
-            mode="outlined"
-            label={"Contato"}
-            placeholderTextColor={"#E5ECF4"}
-            // ...rest of the code
-            value={eventData.contato}
-            onChangeText={(text) =>
-              setEventData({ ...eventData, contato: text })
-            }
-          />
-          <TextInput
-            multiline={true}
-            numberOfLines={4}
-            label={"Descrição"}
-            // style={styles.descriptionInput}
-            placeholderTextColor={"#E5ECF4"}
-            mode="outlined"
-            dense={true}
-            placeholder="Description"
-            value={eventData.descricao}
-            onChangeText={(text) =>
-              setEventData({ ...eventData, descricao: text })
-            }
-          />
-          <View className="bg-white rounded-md border ">
-            <Dropdown
-              value={eventData.categoria}
-              placeholder="Selecione categoria"
-              data={[
-                { value: "cultural", label: "Cultural" },
-                { value: "esportivo", label: "Esportivo" },
-                { value: "educacional", label: "Educacional" },
-                { value: "entretenimento", label: "Entretenimento" },
-                { value: "gastronomia", label: "Gastronomia" },
-                { value: "tecnologico", label: "Tecnológico" },
-                { value: "moda", label: "Moda" },
-                { value: "outros", label: "Outros" },
-              ]}
-              valueField={"value"}
-              labelField={"label"}
-              onChange={(value: any) => {
-                setEventData({ ...eventData, categoria: value.value });
-              }}
-            />
-          </View>
-          <View className="bg-white rounded-md border ">
-            <Dropdown
-              value={eventData.classificacao}
-              placeholder="Selecione classificação"
-              data={[
-                { value: "livre", label: "Livre" },
-                { value: "10", label: "10" },
-                { value: "12", label: "12" },
-                { value: "14", label: "14" },
-                { value: "16", label: "16" },
-                { value: "18", label: "18" },
-              ]}
-              valueField={"value"}
-              labelField={"label"}
-              onChange={(value: any) => {
-                setEventData({ ...eventData, classificacao: value.value });
-              }}
-            />
-          </View>
-          <View className="flex flex-row bg-white p-1 items-center justify-between rounded-md border">
-            <Text className="text-base">
-              {eventData.data_hora_inicio &&
-                formateDate(eventData.data_hora_inicio)}
-              {eventData.data_hora_fim &&
-                " - " + formateDate(eventData.data_hora_fim)}
-            </Text>
-            <View className=" border-0 border-l-2 pl-2 border-l-gray-300">
-              <TouchableOpacity
-                onPress={() => setOpenDatePicker(true)}
-                className="p-3 bg-gray-300 rounded-full"
-              >
-                <Icon.Calendar height={20} width={20} stroke={"gray"} />
-              </TouchableOpacity>
             </View>
-          </View>
-          <Button
-            mode="contained"
-            className="rounded border-purple-500 "
-            onPress={() => {
-              navigation.navigate("SelectLocationScreen");
-            }}
-          >
-            <MaterialIcons name="map" size={24} color="black" />
-          </Button>
-          <View className="flex flex-row items-stretch justify-between">
-            <View className="flex flex-grow flex-row justify-start items-center border border-purple-400 py-2 px-1 rounded bg-white">
-              <MaterialIcons name="my-location" size={24} color="black" />
-              <View className="flex flex-col justify-start px-3">
-                <Text className="flex flex-wrap flex-shrink">
-                  {convertAddressText(eventData?.endereco)}
-                </Text>
+            <Button
+              mode="contained"
+              className="rounded border-purple-500 "
+              onPress={() => {
+                navigation.navigate("SelectLocationScreen");
+              }}
+            >
+              <MaterialIcons name="map" size={24} color="black" />
+            </Button>
+            <View className="flex flex-row items-stretch justify-between">
+              <View className="flex flex-grow flex-row justify-start items-center border border-purple-400 py-2 px-1 rounded bg-white">
+                <MaterialIcons name="my-location" size={24} color="black" />
+                <View className="flex flex-col justify-start px-3">
+                  <Text className="flex flex-wrap flex-shrink">
+                    {convertAddressText(eventData?.endereco)}
+                  </Text>
+                </View>
               </View>
             </View>
+            {/* // create a button to go other page to select location */}
           </View>
-          {/* // create a button to go other page to select location */}
-        </View>
 
-        <DatePickerModal
-          locale="pt-br"
-          mode="range"
-          visible={openDatePicker}
-          onDismiss={onDismissDate}
-          startDate={eventData.data_hora_inicio}
-          endDate={eventData.data_hora_fim}
-          onConfirm={onConfirmDate}
-        />
+          <DatePickerModal
+            locale="pt-br"
+            mode="range"
+            visible={openDatePicker}
+            onDismiss={onDismissDate}
+            startDate={eventData.data_hora_inicio}
+            endDate={eventData.data_hora_fim}
+            onConfirm={onConfirmDate}
+          />
+        </ScrollView>
       </View>
       <View
         style={{

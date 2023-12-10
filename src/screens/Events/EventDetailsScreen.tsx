@@ -131,7 +131,7 @@ export function EventDetailsScreen() {
   const formatDate = (date: Date) => {
     if (!isValidDate(date)) return;
     const date_string = parseISO(date.toString());
-    return format(date_string, "dd/MM/yyyy HH:mm ");
+    return format(date_string, "dd/MM/yyyy");
   };
 
   if (!event) return <View></View>;
@@ -168,12 +168,12 @@ export function EventDetailsScreen() {
           )}
           {settings && (
             <>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 className="absolute top-24 right-4 bg-white rounded-full p-2 shadow"
                 onPress={() => {}}
               >
                 <Icon.Edit strokeWidth={3} className="text-primary" />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity
                 className="absolute top-36 right-4 bg-white rounded-full p-2 shadow"
                 onPress={confirmDelete}
@@ -188,7 +188,7 @@ export function EventDetailsScreen() {
             <View>
               <Text
                 style={{ includeFontPadding: false }}
-                className="leading-none text-3xl font-semibold text-center font-serif"
+                className="leading-none text-3xl font-semibold text-center"
               >
                 {event.nome}
                 <View className=" text-center right-20 bg-green-500  px-2 border border-green-600 rounded-full">

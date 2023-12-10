@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View } from "react-native";
-import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
-import CustomMarker from "../components/CustomMarker";
 import { getEventListByFilter } from "../services/event";
 import { EventData } from "../interfaces/interfaces";
 import Map from "../components/Map";

@@ -119,12 +119,12 @@ export default function SelectLocationScreen() {
           />
         </ScrollView>
 
-        <View className="flex flex-col items-center gap-2 justify-between space-x-2s">
+        {/* <View className="flex flex-col items-center gap-2 justify-between space-x-2s">
           <Text className="text-black">ou</Text>
           <Button mode="contained" className="rounded" onPress={() => {}}>
             Buscar pelo mapa
           </Button>
-        </View>
+        </View> */}
       </View>
     </SafeAreaView>
   );
